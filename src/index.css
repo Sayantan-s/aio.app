@@ -4,6 +4,15 @@
 
 @layer base {
   body {
-    @apply text-slate-500 text-sm;
+    @apply text-slate-500/80 text-sm bg-blue-50;
+    background-color: rgb(255, 255, 255);
+    background-image: radial-gradient(
+        at 66% 14%,
+        rgb(233, 213, 255) 0,
+        transparent 53%
+      ),
+      radial-gradient(at 31% 30%, rgb(241, 245, 249) 0, transparent 52%),
+      radial-gradient(at 51% 32%, rgb(191, 219, 254) 0, transparent 79%),
+      radial-gradient(at 31% 45%, rgb(191, 219, 254) 0, transparent 100%);
   }
 }

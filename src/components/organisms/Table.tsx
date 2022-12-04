@@ -1,9 +1,14 @@
 import { HTMLMotionProps, motion } from "framer-motion";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
-interface TableProps<TData = unknown> extends PropsWithChildren {
-  headings: string[];
+interface ContextProps<TData = unknown> {
   data: TData[];
+}
+interface TableProps<TData = unknown>
+  extends PropsWithChildren,
+    HTMLMotionProps<"div">,
+    ContextProps<TData> {
+  className?: string;
 }
 
 interface TableRowProps extends HTMLMotionProps<"div"> {
@@ -12,7 +17,7 @@ interface TableRowProps extends HTMLMotionProps<"div"> {
 }
 
 type TableHeadProps = Omit<TableRowProps, "children"> & {
-  children: (cell: string) => React.ReactNode;
+  children: JSX.Element[];
 };
 
 type TableBodyProps<TData> = Omit<TableRowProps, "children"> & {
@@ -21,13 +26,13 @@ type TableBodyProps<TData> = Omit<TableRowProps, "children"> & {
 
 type TableCellProps = TableRowProps;
 
-const TableContext = createContext<TableProps | null>(null);
+const TableContext = createContext<ContextProps | null>(null);
 
-const TableRoot = <TData,>({ children, ...props }: TableProps<TData>) => {
-  const memoizedValues = useMemo(() => props, [props]);
+const TableRoot = <TData,>({ children, data, ...props }: TableProps<TData>) => {
+  const memoizedValues = useMemo(() => data, [data]);
   return (
-    <TableContext.Provider value={memoizedValues}>
-      {children}
+    <TableContext.Provider value={{ data: memoizedValues }}>
+      <motion.div {...props}>{children}</motion.div>
     </TableContext.Provider>
   );
 };
@@ -47,19 +52,32 @@ const Row = ({ children, className, ...rest }: TableRowProps) => {
   );
 };
 
-const Head = ({ children, ...rest }: TableHeadProps) => {
-  const { headings } = useTable();
+const Head = ({ children, className, ...rest }: TableHeadProps) => {
+  const styles = [
+    `flex`,
+    "p-4",
+    ...(className ? className.split(" ") : []),
+  ].join(" ");
+
   return (
-    <motion.div {...rest}>
-      <Table.Row>{headings.map((heading) => children(heading))}</Table.Row>
+    <motion.div className={styles} {...rest}>
+      {children}
     </motion.div>
   );
 };
 
-const Body = <TData,>({ children, ...rest }: TableBodyProps<TData>) => {
+const Body = <TData,>({
+  children,
+  className,
+  ...rest
+}: TableBodyProps<TData>) => {
   const { data } = useTable();
+  const styles = [
+    `after:w-full after:h-12 after:content[' '] after:absolute after:bottom-0 after:rounded-b-lg  after:bg-gradient-to-b after:from-white/0 after:via-white/20 after:to-white/60`,
+    ...(className ? className.split(" ") : []),
+  ].join(" ");
   return (
-    <motion.div {...rest}>
+    <motion.div className={styles} {...rest}>
       {data.map((data, id) => children(data as TData, id))}
     </motion.div>
   );

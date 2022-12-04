@@ -1,1 +1,2 @@
 - Didn't use much Semantics (e.g. Table) cause in the JD, flexbox skills were mandatory.
+- The Created a Generic Table component just to avoid code reusibility for both routes.
