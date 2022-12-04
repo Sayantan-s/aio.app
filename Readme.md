@@ -1,0 +1,1 @@
+- Didn't use much Semantics (e.g. Table) cause in the JD, flexbox skills were mandatory.
