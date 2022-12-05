@@ -1,5 +1,5 @@
 import { sensibullApi } from "@api";
-import { Table } from "@components/organisms";
+import { Search, Table } from "@components/organisms";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -11,6 +11,29 @@ const Stocks = () => {
   const [sbullStocksApiData, setsbullStocksApiData] = useState<
     Array<StockObjectType>
   >([]);
+
+  const [search, setSearch] = useState("");
+
+  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (eve) =>
+    setSearch(eve.target.value);
+
+  const handleSearchClear = () => setSearch("");
+
+  const searchResults = (keys: KeyOfStockHeadersType[]) => {
+    const filteredSearch = sbullStocksApiData.filter((stock) =>
+      keys.some((key) =>
+        stock[key].toLowerCase().includes(search.toLowerCase())
+      )
+    );
+    return filteredSearch;
+  };
+
+  const manipulateInnerHTML = (str: string) =>
+    str.replace(
+      new RegExp(search, "gi"),
+      (match) =>
+        `<mark class="bg-yellow-200/50 text-yellow-900">${match}</mark>`
+    );
 
   useEffect(() => {
     async function fetchSensibullStocks() {
@@ -37,9 +60,19 @@ const Stocks = () => {
 
   return (
     <div className="absolute max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+      <div className="flex justify-between mb-4">
+        <h1 />
+        <Search
+          className="flex items-center gap-x-2 flex-1 max-w-xs bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10"
+          value={search}
+          onSearch={handleSearch}
+          onSearchClear={handleSearchClear}
+          placeholder={"Havell's India or SBI.."}
+        />
+      </div>
       <Table
         className="rounded-lg overflow-hidden shadow-purple-400/10 shadow-2xl"
-        data={sbullStocksApiData}
+        data={searchResults(["sector", "name"])}
       >
         <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4">
           <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600">
@@ -68,11 +101,17 @@ const Stocks = () => {
                 <NavLink
                   to={`/${cellData.symbol.toLowerCase()}`}
                   className="font-medium text-purple-600 bg-white rounded-md hover:bg-purple-50 px-2 py-1"
-                >
-                  {cellData.symbol}
-                </NavLink>
+                  dangerouslySetInnerHTML={{
+                    __html: manipulateInnerHTML(cellData.symbol),
+                  }}
+                />
               </Table.Cell>
-              <Table.Cell className="flex-1">{cellData.name}</Table.Cell>
+              <Table.Cell
+                className="flex-1"
+                dangerouslySetInnerHTML={{
+                  __html: manipulateInnerHTML(cellData.name),
+                }}
+              />
               <Table.Cell className="flex-1">
                 {cellData.sector || <span className="text-slate-400">-</span>}
               </Table.Cell>

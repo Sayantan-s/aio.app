@@ -14,6 +14,7 @@ export default defineConfig({
       },
       { find: "@hooks", replacement: path.resolve(__dirname, "src/hooks") },
       { find: "@api", replacement: path.resolve(__dirname, "src/api") },
+      { find: "@utils", replacement: path.resolve(__dirname, "src/utils") },
     ],
   },
   server: {

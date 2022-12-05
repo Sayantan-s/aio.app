@@ -1,5 +1,11 @@
 import { HTMLMotionProps, motion } from "framer-motion";
-import { createContext, PropsWithChildren, useContext, useMemo } from "react";
+import {
+  createContext,
+  memo,
+  PropsWithChildren,
+  useContext,
+  useMemo,
+} from "react";
 
 interface ContextProps<TData = unknown> {
   data: TData[];
@@ -24,7 +30,7 @@ type TableBodyProps<TData> = Omit<TableRowProps, "children"> & {
   children: (cell: TData, id: number) => React.ReactNode;
 };
 
-type TableCellProps = TableRowProps;
+type TableCellProps = Partial<TableRowProps>;
 
 const TableContext = createContext<ContextProps | null>(null);
 
@@ -87,4 +93,4 @@ const Cell = ({ children, ...rest }: TableCellProps) => (
   <motion.div {...rest}>{children}</motion.div>
 );
 
-export let Table = Object.assign(TableRoot, { Head, Row, Cell, Body });
+export let Table = Object.assign(memo(TableRoot), { Head, Row, Cell, Body });

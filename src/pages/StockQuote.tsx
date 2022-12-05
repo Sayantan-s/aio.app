@@ -1,7 +1,8 @@
 import { sensibullApi } from "@api";
-import { Table } from "@components/organisms";
+import { SortButtons, Table } from "@components/organisms";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 interface StockQuoteType {
   price: number;
@@ -17,11 +18,16 @@ interface StockQuotesApiResponseType {
 }
 
 type SortableValues = Exclude<keyof StockQuoteType, "price">;
+type Order = "asc" | "desc";
 
 const StockQuote = () => {
   const { stockname } = useParams();
   const [stockQuotes, setStockQuotes] = useState<Array<StockQuoteType>>([]);
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
+  const [order, setOrder] = useState<Record<SortableValues, Order | null>>({
+    valid_till: null,
+    time: null,
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchSensibullStockQuote() {
@@ -36,28 +42,51 @@ const StockQuote = () => {
     fetchSensibullStockQuote();
   }, []);
 
-  const handleSort = (property: SortableValues) => {
+  const handleSort = (property: SortableValues, od: Order) => {
     let copyQuotes = [...stockQuotes];
-    if (order === "asc") {
+    if (od === "asc") {
       copyQuotes = copyQuotes.sort(
         (next, curr) =>
           new Date(next[property]).getTime() -
           new Date(curr[property]).getTime()
       );
-      setOrder("desc");
     } else {
       copyQuotes = copyQuotes.sort(
         (next, curr) =>
           new Date(curr[property]).getTime() -
           new Date(next[property]).getTime()
       );
-      setOrder("asc");
     }
+    setOrder((prevState) => ({ ...prevState, [property]: od }));
     setStockQuotes(copyQuotes);
   };
 
+  const handleGoBack = () => navigate(-1);
+
   return (
     <div className="absolute max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+      <motion.button
+        whileTap={{ scale: 0.9 }}
+        className="flex items-center justify-center mb-4 bg-white/70 backdrop:blur-lg w-[36px] h-[36px] rounded-full shadow-lg shadow-purple-400/10"
+        onClick={handleGoBack}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width={16}
+          height={16}
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <path
+            className="stroke-slate-400"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeMiterlimit={10}
+            strokeWidth="2"
+            d="M15 19.92L8.48 13.4c-.77-.77-.77-2.03 0-2.8L15 4.08"
+          />
+        </svg>
+      </motion.button>
       <Table
         className="rounded-lg overflow-hidden shadow-purple-400/10 shadow-2xl"
         data={stockQuotes}
@@ -69,17 +98,23 @@ const StockQuote = () => {
           <Table.Cell className="flex-1 font-medium text-slate-600">
             Price
           </Table.Cell>
-          <Table.Cell
-            className="flex-1 cursor-pointer font-medium text-slate-600"
-            onClick={() => handleSort("time")}
-          >
+          <Table.Cell className=" flex flex-1 items-center font-medium text-slate-600">
             Time
+            <SortButtons
+              order={order.time}
+              className="ml-3"
+              onAscend={() => handleSort("time", "asc")}
+              onDescend={() => handleSort("time", "desc")}
+            />
           </Table.Cell>
-          <Table.Cell
-            className="flex-1 cursor-pointer font-medium text-slate-600"
-            onClick={() => handleSort("valid_till")}
-          >
+          <Table.Cell className="flex flex-1 items-center font-medium text-slate-600">
             Validity
+            <SortButtons
+              order={order.valid_till}
+              className="ml-3"
+              onAscend={() => handleSort("valid_till", "asc")}
+              onDescend={() => handleSort("valid_till", "desc")}
+            />
           </Table.Cell>
         </Table.Head>
         <Table.Body className="h-[40rem] overflow-scroll backdrop:blur-lg bg-white/50">
@@ -88,7 +123,7 @@ const StockQuote = () => {
               <Table.Cell className="flex-[0.15] font-medium text-slate-300 text-center">
                 {id + 1}
               </Table.Cell>
-              <Table.Cell className="flex-1">
+              <Table.Cell className="flex-1 text-slate-500 font-medium">
                 {cellData.price.toFixed(2)}
               </Table.Cell>
               <Table.Cell className="flex-1">{cellData.time}</Table.Cell>
