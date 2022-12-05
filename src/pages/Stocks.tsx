@@ -88,7 +88,7 @@ const Stocks = () => {
             Category
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-scroll backdrop:blur-lg bg-white/50">
+        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50">
           {(cellData: StockObjectType, id) => (
             <Table.Row
               key={cellData.name}

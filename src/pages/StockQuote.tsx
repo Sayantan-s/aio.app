@@ -61,6 +61,11 @@ const StockQuote = () => {
     setStockQuotes(copyQuotes);
   };
 
+  const handleTimeExpiration = (time: string) => {
+    console.log(new Date(time).getTime() < new Date().getTime());
+    return time;
+  };
+
   const handleGoBack = () => navigate(-1);
 
   return (
@@ -108,7 +113,7 @@ const StockQuote = () => {
             />
           </Table.Cell>
           <Table.Cell className="flex flex-1 items-center font-medium text-slate-600">
-            Validity
+            Valid till
             <SortButtons
               order={order.valid_till}
               className="ml-3"
@@ -127,7 +132,9 @@ const StockQuote = () => {
                 {cellData.price.toFixed(2)}
               </Table.Cell>
               <Table.Cell className="flex-1">{cellData.time}</Table.Cell>
-              <Table.Cell className="flex-1">{cellData.valid_till}</Table.Cell>
+              <Table.Cell className="flex-1">
+                {handleTimeExpiration(cellData.valid_till)}
+              </Table.Cell>
             </Table.Row>
           )}
         </Table.Body>

@@ -15,4 +15,12 @@
       radial-gradient(at 51% 32%, rgb(191, 219, 254) 0, transparent 79%),
       radial-gradient(at 31% 45%, rgb(191, 219, 254) 0, transparent 100%);
   }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

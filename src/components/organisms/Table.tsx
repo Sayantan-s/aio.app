@@ -1,10 +1,12 @@
-import { HTMLMotionProps, motion } from "framer-motion";
+import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 import {
   createContext,
   memo,
   PropsWithChildren,
   useContext,
   useMemo,
+  useRef,
+  useState,
 } from "react";
 
 interface ContextProps<TData = unknown> {
@@ -78,13 +80,63 @@ const Body = <TData,>({
   ...rest
 }: TableBodyProps<TData>) => {
   const { data } = useTable();
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+
+  const tableBodyRef = useRef<HTMLDivElement>(null);
+
   const styles = [
-    `after:w-full after:h-12 after:content[' '] after:absolute after:bottom-0 after:rounded-b-lg  after:bg-gradient-to-b after:from-white/0 after:via-white/20 after:to-white/60`,
+    !hasScrolledToBottom
+      ? `after:w-full after:h-12 after:content[' '] after:absolute after:bottom-0 after:rounded-b-lg after:bg-gradient-to-b after:from-white/0 after:via-white/20 after:to-white/60`
+      : "",
+    "scrollbar-hide",
     ...(className ? className.split(" ") : []),
   ].join(" ");
+
+  const handleTableBodyScroll: React.UIEventHandler<HTMLDivElement> = (eve) => {
+    const { scrollHeight, clientHeight, scrollTop } = eve.currentTarget;
+    setHasScrolledToBottom(!(scrollHeight - (clientHeight + scrollTop)));
+  };
+
+  const onScrollToTop = () =>
+    tableBodyRef.current?.scrollTo({ behavior: "smooth", top: 0 });
+
   return (
-    <motion.div className={styles} {...rest}>
+    <motion.div
+      className={styles}
+      {...rest}
+      onScroll={handleTableBodyScroll}
+      ref={tableBodyRef}
+    >
       {data.map((data, id) => children(data as TData, id))}
+      <AnimatePresence>
+        {hasScrolledToBottom && (
+          <motion.button
+            onClick={onScrollToTop}
+            whileTap={{ scale: 0.9 }}
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 30, opacity: 0 }}
+            className="fixed bg-white shadow-sm shadow-slate-300/50 rounded-full bottom-6 right-6 w-8 h-8 flex justify-center items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width={18}
+              height={18}
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                className="stroke-slate-700"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeMiterlimit={10}
+                strokeWidth="1.5"
+                d="M19.92 15.05L13.4 8.53c-.77-.77-2.03-.77-2.8 0l-6.52 6.52"
+              />
+            </svg>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
