@@ -10,7 +10,8 @@ interface ReducerProps<TData, TError> {
 type Action<TData, TError> =
   | { type: "LOADING" }
   | { type: "SUCCESS"; payload: TData }
-  | { type: "ERROR"; payload: TError };
+  | { type: "ERROR"; payload: TError }
+  | { type: "UPDATE_DATA"; payload: TData };
 
 interface FetchConfig {
   url: string;
@@ -36,6 +37,8 @@ const createReducer =
         return { ...state, loading: false, data: action.payload };
       case "ERROR":
         return { ...state, loading: false, error: action.payload };
+      case "UPDATE_DATA":
+        return { ...state, data: action.payload };
       default:
         return state;
     }
@@ -84,5 +87,8 @@ export const useFetch = <
     };
   }, []);
 
-  return [state, (payload: TData) => dispatch({ type: "SUCCESS", payload })];
+  return [
+    state,
+    (payload: TData) => dispatch({ type: "UPDATE_DATA", payload }),
+  ];
 };

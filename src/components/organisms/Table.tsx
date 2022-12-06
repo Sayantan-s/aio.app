@@ -86,7 +86,7 @@ const Body = <TData,>({
 
   const styles = [
     !hasScrolledToBottom
-      ? `after:w-full after:h-12 after:content[' '] after:absolute after:bottom-0 after:rounded-b-lg after:bg-gradient-to-b after:from-white/0 after:via-white/20 after:to-white/60`
+      ? `after:w-full after:h-12 after:content[' '] after:absolute after:bottom-0 after:rounded-b-lg after:bg-gradient-to-b after:from-white/0 after:via-white/20 after:to-white/70 dark:after:from-slate-900/0 dark:after:via-slate-900/20 dark:after:to-slate-900/70`
       : "",
     "scrollbar-hide",
     ...(className ? className.split(" ") : []),
@@ -118,7 +118,7 @@ const Body = <TData,>({
             initial={{ x: 30, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 30, opacity: 0 }}
-            className="fixed bg-white shadow-sm shadow-slate-300/50 rounded-full bottom-6 right-6 w-8 h-8 flex justify-center items-center"
+            className="fixed bg-white shadow-sm shadow-slate-300/50 rounded-full bottom-6 right-6 w-8 h-8 flex justify-center items-center dark:bg-slate-900 dark:shadow-none dark:border-2 dark:border-slate-800/50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +128,7 @@ const Body = <TData,>({
               fill="none"
             >
               <path
-                className="stroke-slate-700"
+                className="stroke-slate-700 dark:stroke-slate-700"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeMiterlimit={10}

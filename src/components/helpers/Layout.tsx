@@ -1,11 +1,15 @@
 import React from "react";
 
-interface Props {
+interface Props
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   children: React.ReactNode;
   className?: string;
 }
 
-const Layout = ({ children, className }: Props) => {
+export const Layout = ({ children, className, ...rest }: Props) => {
   const styles = [
     `mx-auto`,
     "h-screen",
@@ -13,7 +17,9 @@ const Layout = ({ children, className }: Props) => {
     ...(className ? className.split(" ") : []),
   ].join(" ");
 
-  return <div className={styles}>{children}</div>;
+  return (
+    <div className={styles} {...rest}>
+      {children}
+    </div>
+  );
 };
-
-export default Layout;

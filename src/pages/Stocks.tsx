@@ -9,7 +9,7 @@ type KeyOfStockHeadersType = Lowercase<typeof stockHeaders[number]>;
 type StockObjectType = Record<KeyOfStockHeadersType, string>;
 
 const Stocks = () => {
-  const [{ loading, data: sbullStocks, error }, setStockQuotes] = useFetch<
+  const [{ loading, data: sbullStocks, error }] = useFetch<
     string,
     string,
     Array<StockObjectType>,
@@ -62,7 +62,7 @@ const Stocks = () => {
     str.replace(
       new RegExp(search, "gi"),
       (match) =>
-        `<mark class="bg-yellow-200/50 text-yellow-900">${match}</mark>`
+        `<mark class="bg-pink-500/20 text-pink-700 rounded">${match}</mark>`
     );
 
   return (
@@ -70,7 +70,7 @@ const Stocks = () => {
       <div className="flex justify-between mb-4">
         <h1 />
         <Search
-          className="flex items-center gap-x-2 flex-1 max-w-xs bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10"
+          className="flex items-center gap-x-2 flex-1 max-w-xs bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10"
           value={search}
           onSearch={handleSearch}
           onSearchClear={handleSearchClear}
@@ -78,40 +78,40 @@ const Stocks = () => {
         />
       </div>
       <Table
-        className="rounded-lg overflow-hidden shadow-purple-400/10 shadow-2xl"
+        className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl"
         data={searchResults(["sector", "name"])}
       >
-        <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4">
-          <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600">
+        <Table.Head className="bg-white/70 dark:bg-slate-900/90 shadow-md shadow-slate-500/10 dark:shadow-slate-900/40 gap-x-4">
+          <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600 dark:text-slate-600/50">
             Sl.no
           </Table.Cell>
-          <Table.Cell className="flex-1 font-medium text-slate-600">
+          <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
             Symbol
           </Table.Cell>
-          <Table.Cell className="flex-1 font-medium text-slate-600">
+          <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
             Name
           </Table.Cell>
-          <Table.Cell className="flex-1 font-medium text-slate-600">
+          <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
             Category
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50">
+        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60">
           {loading ? (
             <div>loading...</div>
           ) : (
             (cellData: StockObjectType, id) => (
               <Table.Row
                 key={cellData.name}
-                className="py-3 px-4 hover:bg-white/40 gap-x-4"
+                className="py-3 px-4 hover:bg-white/40 hover:dark:bg-slate-900/40 gap-x-4"
               >
-                <Table.Cell className="flex-[0.15] font-medium text-slate-300 text-center">
+                <Table.Cell className="flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80 text-center">
                   {id + 1}
                 </Table.Cell>
                 <Table.Cell className="flex-1">
-                  <span className="bg-white rounded-md px-2 py-1">
+                  <span className="bg-white dark:bg-slate-900/70 rounded-md px-2 py-1">
                     <NavLink
                       to={`/${cellData.symbol.toLowerCase()}`}
-                      className="text-transparent bg-clip-text bg-gradient-to-br via-purple-400 from-pink-400 to-blue-500 font-semibold"
+                      className="text-transparent bg-clip-text bg-gradient-to-br from-pink-300 via-purple-500 to-blue-500 font-semibold"
                       dangerouslySetInnerHTML={{
                         __html: manipulateInnerHTML(cellData.symbol),
                       }}
@@ -119,12 +119,12 @@ const Stocks = () => {
                   </span>
                 </Table.Cell>
                 <Table.Cell
-                  className="flex-1"
+                  className="flex-1 dark:text-slate-500"
                   dangerouslySetInnerHTML={{
                     __html: manipulateInnerHTML(cellData.name),
                   }}
                 />
-                <Table.Cell className="flex-1">
+                <Table.Cell className="flex-1 dark:text-slate-500">
                   {cellData.sector || <span className="text-slate-400">-</span>}
                 </Table.Cell>
               </Table.Row>
