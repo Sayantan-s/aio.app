@@ -1,7 +1,8 @@
 import { sensibullApi } from "@api";
 import { SortButtons, Table } from "@components/organisms";
+import { useFetch } from "@hooks";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 interface StockQuoteType {
@@ -10,11 +11,16 @@ interface StockQuoteType {
   valid_till: string;
 }
 
-interface StockQuotesApiResponseType {
-  success: "true" | "false";
+interface StockQuotesApiResponseSuccessType {
+  success: true;
   payload: {
     [stockname: string]: Array<StockQuoteType>;
   };
+}
+
+interface StockQuotesApiResponseErrorType {
+  success: false;
+  err_msg: string;
 }
 
 type SortableValues = Exclude<keyof StockQuoteType, "price">;
@@ -22,25 +28,29 @@ type Order = "asc" | "desc";
 
 const StockQuote = () => {
   const { stockname } = useParams();
-  const [stockQuotes, setStockQuotes] = useState<Array<StockQuoteType>>([]);
+  const navigate = useNavigate();
   const [order, setOrder] = useState<Record<SortableValues, Order | null>>({
     valid_till: null,
     time: null,
   });
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    async function fetchSensibullStockQuote() {
-      const stockQuotes = await sensibullApi<StockQuotesApiResponseType>(
-        `/quotes/${stockname?.toUpperCase()}`,
-        {
-          responseType: "json",
-        }
-      );
-      setStockQuotes(stockQuotes.payload[stockname?.toUpperCase()!]);
-    }
-    fetchSensibullStockQuote();
-  }, []);
+  const [{ loading, data: stockQuotes, error }, setStockQuotes] = useFetch<
+    StockQuotesApiResponseSuccessType,
+    StockQuotesApiResponseErrorType,
+    Array<StockQuoteType>,
+    string
+  >({
+    config: {
+      api: sensibullApi,
+      url: `/quotes/${stockname?.toUpperCase()}`,
+    },
+    initialState: {
+      loading: false,
+      data: [],
+      error: "",
+    },
+    onError: (error) => error.err_msg,
+    onSuccess: (data) => data.payload[stockname?.toUpperCase()!],
+  });
 
   const handleSort = (property: SortableValues, od: Order) => {
     let copyQuotes = [...stockQuotes];
@@ -62,7 +72,6 @@ const StockQuote = () => {
   };
 
   const handleTimeExpiration = (time: string) => {
-    console.log(new Date(time).getTime() < new Date().getTime());
     return time;
   };
 
@@ -123,19 +132,26 @@ const StockQuote = () => {
           </Table.Cell>
         </Table.Head>
         <Table.Body className="h-[40rem] overflow-scroll backdrop:blur-lg bg-white/50">
-          {(cellData: StockQuoteType, id) => (
-            <Table.Row key={id} className="py-3 px-4 hover:bg-white/40 gap-x-4">
-              <Table.Cell className="flex-[0.15] font-medium text-slate-300 text-center">
-                {id + 1}
-              </Table.Cell>
-              <Table.Cell className="flex-1 text-slate-500 font-medium">
-                {cellData.price.toFixed(2)}
-              </Table.Cell>
-              <Table.Cell className="flex-1">{cellData.time}</Table.Cell>
-              <Table.Cell className="flex-1">
-                {handleTimeExpiration(cellData.valid_till)}
-              </Table.Cell>
-            </Table.Row>
+          {loading ? (
+            <div className=" font-semibold text-lg">loading....</div>
+          ) : (
+            (cellData: StockQuoteType, id) => (
+              <Table.Row
+                key={id}
+                className="py-3 px-4 hover:bg-white/40 gap-x-4"
+              >
+                <Table.Cell className="flex-[0.15] font-medium text-slate-300 text-center">
+                  {id + 1}
+                </Table.Cell>
+                <Table.Cell className="flex-1 text-slate-500 font-medium">
+                  {cellData.price.toFixed(2)}
+                </Table.Cell>
+                <Table.Cell className="flex-1">{cellData.time}</Table.Cell>
+                <Table.Cell className="flex-1">
+                  {handleTimeExpiration(cellData.valid_till)}
+                </Table.Cell>
+              </Table.Row>
+            )
           )}
         </Table.Body>
       </Table>

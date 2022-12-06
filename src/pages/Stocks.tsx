@@ -1,6 +1,7 @@
 import { sensibullApi } from "@api";
 import { Search, Table } from "@components/organisms";
-import { useEffect, useState } from "react";
+import { useFetch } from "@hooks";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const stockHeaders = ["Symbol", "Name", "Sector"] as const;
@@ -8,9 +9,38 @@ type KeyOfStockHeadersType = Lowercase<typeof stockHeaders[number]>;
 type StockObjectType = Record<KeyOfStockHeadersType, string>;
 
 const Stocks = () => {
-  const [sbullStocksApiData, setsbullStocksApiData] = useState<
-    Array<StockObjectType>
-  >([]);
+  const [{ loading, data: sbullStocks, error }, setStockQuotes] = useFetch<
+    string,
+    string,
+    Array<StockObjectType>,
+    string
+  >({
+    config: {
+      url: "/instruments",
+      api: sensibullApi,
+    },
+    initialState: {
+      loading: false,
+      data: [],
+      error: "",
+    },
+    onError: (error) => error,
+    onSuccess: (data) => {
+      const rows = data
+        .split("\n")
+        .map((text) => text.split(","))
+        .slice(1, -1);
+      const stocksData = rows.map((cell) => {
+        let stockObj: StockObjectType = {} as StockObjectType;
+        stockHeaders.forEach((headerKey, index) => {
+          const key = headerKey.toLowerCase() as KeyOfStockHeadersType;
+          stockObj[key] = cell[index];
+        });
+        return stockObj;
+      });
+      return stocksData;
+    },
+  });
 
   const [search, setSearch] = useState("");
 
@@ -20,7 +50,7 @@ const Stocks = () => {
   const handleSearchClear = () => setSearch("");
 
   const searchResults = (keys: KeyOfStockHeadersType[]) => {
-    const filteredSearch = sbullStocksApiData.filter((stock) =>
+    const filteredSearch = sbullStocks.filter((stock) =>
       keys.some((key) =>
         stock[key].toLowerCase().includes(search.toLowerCase())
       )
@@ -34,29 +64,6 @@ const Stocks = () => {
       (match) =>
         `<mark class="bg-yellow-200/50 text-yellow-900">${match}</mark>`
     );
-
-  useEffect(() => {
-    async function fetchSensibullStocks() {
-      const stockData = await sensibullApi("/instruments", {
-        responseType: "text",
-      });
-      const data = stockData
-        .split("\n")
-        .map((text) => text.split(","))
-        .slice(1, -1);
-      setsbullStocksApiData(() =>
-        data.map((cell) => {
-          let stockObj: StockObjectType = {} as StockObjectType;
-          stockHeaders.forEach((headerKey, index) => {
-            const key = headerKey.toLowerCase() as KeyOfStockHeadersType;
-            stockObj[key] = cell[index];
-          });
-          return stockObj;
-        })
-      );
-    }
-    fetchSensibullStocks();
-  }, []);
 
   return (
     <div className="absolute max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
@@ -89,33 +96,39 @@ const Stocks = () => {
           </Table.Cell>
         </Table.Head>
         <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50">
-          {(cellData: StockObjectType, id) => (
-            <Table.Row
-              key={cellData.name}
-              className="py-3 px-4 hover:bg-white/40 gap-x-4"
-            >
-              <Table.Cell className="flex-[0.15] font-medium text-slate-300 text-center">
-                {id + 1}
-              </Table.Cell>
-              <Table.Cell className="flex-1">
-                <NavLink
-                  to={`/${cellData.symbol.toLowerCase()}`}
-                  className="font-medium text-purple-600 bg-white rounded-md hover:bg-purple-50 px-2 py-1"
+          {loading ? (
+            <div>loading...</div>
+          ) : (
+            (cellData: StockObjectType, id) => (
+              <Table.Row
+                key={cellData.name}
+                className="py-3 px-4 hover:bg-white/40 gap-x-4"
+              >
+                <Table.Cell className="flex-[0.15] font-medium text-slate-300 text-center">
+                  {id + 1}
+                </Table.Cell>
+                <Table.Cell className="flex-1">
+                  <span className="bg-white rounded-md px-2 py-1">
+                    <NavLink
+                      to={`/${cellData.symbol.toLowerCase()}`}
+                      className="text-transparent bg-clip-text bg-gradient-to-br via-purple-400 from-pink-400 to-blue-500 font-semibold"
+                      dangerouslySetInnerHTML={{
+                        __html: manipulateInnerHTML(cellData.symbol),
+                      }}
+                    />
+                  </span>
+                </Table.Cell>
+                <Table.Cell
+                  className="flex-1"
                   dangerouslySetInnerHTML={{
-                    __html: manipulateInnerHTML(cellData.symbol),
+                    __html: manipulateInnerHTML(cellData.name),
                   }}
                 />
-              </Table.Cell>
-              <Table.Cell
-                className="flex-1"
-                dangerouslySetInnerHTML={{
-                  __html: manipulateInnerHTML(cellData.name),
-                }}
-              />
-              <Table.Cell className="flex-1">
-                {cellData.sector || <span className="text-slate-400">-</span>}
-              </Table.Cell>
-            </Table.Row>
+                <Table.Cell className="flex-1">
+                  {cellData.sector || <span className="text-slate-400">-</span>}
+                </Table.Cell>
+              </Table.Row>
+            )
           )}
         </Table.Body>
       </Table>

@@ -29,7 +29,7 @@ type TableHeadProps = Omit<TableRowProps, "children"> & {
 };
 
 type TableBodyProps<TData> = Omit<TableRowProps, "children"> & {
-  children: (cell: TData, id: number) => React.ReactNode;
+  children: ((cell: TData, id: number) => React.ReactNode) | React.ReactNode;
 };
 
 type TableCellProps = Partial<TableRowProps>;
@@ -107,7 +107,9 @@ const Body = <TData,>({
       onScroll={handleTableBodyScroll}
       ref={tableBodyRef}
     >
-      {data.map((data, id) => children(data as TData, id))}
+      {typeof children === "function"
+        ? data.map((data, id) => children(data as TData, id))
+        : children}
       <AnimatePresence>
         {hasScrolledToBottom && (
           <motion.button
