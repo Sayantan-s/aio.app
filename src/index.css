@@ -7,7 +7,7 @@
     @apply box-border;
   }
   body {
-    @apply text-slate-500/80 text-sm bg-blue-50;
+    @apply text-slate-500/80 text-sm bg-blue-50 max-lg:text-xs;
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;

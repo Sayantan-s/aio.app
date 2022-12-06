@@ -1,6 +1,8 @@
 import { sensibullApi } from "@api";
+import { useMode } from "@components/helpers";
 import { SortButtons, Table } from "@components/organisms";
 import { useFetch } from "@hooks";
+import { Player } from "@lottiefiles/react-lottie-player";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -49,8 +51,13 @@ const StockQuote = () => {
       error: "",
     },
     onError: (error) => error.err_msg,
-    onSuccess: (data) => data.payload[stockname?.toUpperCase()!],
+    onSuccess: (data) => {
+      console.log(data);
+      return data.payload[stockname?.toUpperCase()!];
+    },
   });
+
+  const { mode } = useMode();
 
   const handleSort = (property: SortableValues, od: Order) => {
     let copyQuotes = [...stockQuotes];
@@ -71,14 +78,10 @@ const StockQuote = () => {
     setStockQuotes(copyQuotes);
   };
 
-  const handleTimeExpiration = (time: string) => {
-    return time;
-  };
-
   const handleGoBack = () => navigate(-1);
 
   return (
-    <div className="absolute max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+    <div className="absolute max-xl:max-w-5xl max-w-4xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
       <motion.button
         whileTap={{ scale: 0.9 }}
         className="flex items-center justify-center mb-4 bg-white/70 backdrop:blur-lg w-[36px] h-[36px] rounded-full shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-none dark:border-2 dark:border-slate-700/50"
@@ -125,9 +128,16 @@ const StockQuote = () => {
             Valid till
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60">
+        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60 relative">
           {loading ? (
-            <div className=" font-semibold text-lg">loading....</div>
+            <Player
+              autoplay
+              loop
+              src={
+                mode === "dark" ? "/loading_dark.json" : "/loading_light.json"
+              }
+              className="w-12 h-12 opacity-40 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            />
           ) : (
             (cellData: StockQuoteType, id) => (
               <Table.Row
@@ -144,7 +154,7 @@ const StockQuote = () => {
                   {cellData.time}
                 </Table.Cell>
                 <Table.Cell className="flex-1 dark:text-slate-500">
-                  {handleTimeExpiration(cellData.valid_till)}
+                  {cellData.valid_till}
                 </Table.Cell>
               </Table.Row>
             )

@@ -1,7 +1,9 @@
 import { sensibullApi } from "@api";
+import { useMode } from "@components/helpers";
 import { Search, Table } from "@components/organisms";
 import { useFetch } from "@hooks";
-import { useState } from "react";
+import { Player } from "@lottiefiles/react-lottie-player";
+import { useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const stockHeaders = ["Symbol", "Name", "Sector"] as const;
@@ -44,19 +46,23 @@ const Stocks = () => {
 
   const [search, setSearch] = useState("");
 
+  const { mode } = useMode();
+
+  const searchResults = useMemo(() => {
+    return (keys: KeyOfStockHeadersType[]) => {
+      const filteredSearch = sbullStocks.filter((stock) =>
+        keys.some((key) =>
+          stock[key].toLowerCase().includes(search.toLowerCase())
+        )
+      );
+      return filteredSearch;
+    };
+  }, [search, sbullStocks]);
+
   const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (eve) =>
     setSearch(eve.target.value);
 
   const handleSearchClear = () => setSearch("");
-
-  const searchResults = (keys: KeyOfStockHeadersType[]) => {
-    const filteredSearch = sbullStocks.filter((stock) =>
-      keys.some((key) =>
-        stock[key].toLowerCase().includes(search.toLowerCase())
-      )
-    );
-    return filteredSearch;
-  };
 
   const manipulateInnerHTML = (str: string) =>
     str.replace(
@@ -66,7 +72,7 @@ const Stocks = () => {
     );
 
   return (
-    <div className="absolute max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+    <div className="absolute max-xl:max-w-4xl max-lg:max-w-3xl max-md:p-4 max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
       <div className="flex justify-between mb-4">
         <h1 />
         <Search
@@ -78,14 +84,14 @@ const Stocks = () => {
         />
       </div>
       <Table
-        className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl"
+        className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl max-md:min-w-[768px]"
         data={searchResults(["symbol", "name"])}
       >
         <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4 dark:shadow-slate-900/40 dark:bg-slate-900/90">
           <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600 dark:text-slate-600/50">
             Sl.no
           </Table.Cell>
-          <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
+          <Table.Cell className="flex-1 max-lg:flex-[0.5] font-medium text-slate-600 dark:text-slate-600/50">
             Symbol
           </Table.Cell>
           <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
@@ -95,9 +101,16 @@ const Stocks = () => {
             Category
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60">
+        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60 relative">
           {loading ? (
-            <div>loading...</div>
+            <Player
+              autoplay
+              loop
+              src={
+                mode === "dark" ? "/loading_dark.json" : "/loading_light.json"
+              }
+              className="w-12 h-12 opacity-40 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            />
           ) : (
             (cellData: StockObjectType, id) => (
               <Table.Row
@@ -107,7 +120,7 @@ const Stocks = () => {
                 <Table.Cell className="flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80 text-center">
                   {id + 1}
                 </Table.Cell>
-                <Table.Cell className="flex-1">
+                <Table.Cell className="flex-1 max-lg:flex-[0.5]">
                   <span className="bg-white dark:bg-slate-900/70 rounded-md px-2 py-1">
                     <NavLink
                       to={`/${cellData.symbol.toLowerCase()}`}
