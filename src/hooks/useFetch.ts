@@ -76,15 +76,14 @@ export const useFetch = <
         dispatch({ type: "SUCCESS", payload: successData });
       } catch (e) {
         if (axios.isAxiosError<TApiErrorResponse>(e)) {
+          if (e.name === "CanceledError") return;
           const error = onError(e.response?.data!);
           dispatch({ type: "ERROR", payload: error });
         }
       }
     }
     fetcher();
-    return () => {
-      abortController.current?.abort();
-    };
+    return () => abortController.current?.abort();
   }, []);
 
   return [

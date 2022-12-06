@@ -128,7 +128,7 @@ const Body = <TData,>({
               fill="none"
             >
               <path
-                className="stroke-slate-700 dark:stroke-slate-700"
+                className="stroke-slate-700 dark:stroke-slate-600"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeMiterlimit={10}

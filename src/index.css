@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply box-border;
+  }
   body {
     @apply text-slate-500/80 text-sm bg-blue-50;
   }

@@ -79,9 +79,9 @@ const Stocks = () => {
       </div>
       <Table
         className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl"
-        data={searchResults(["sector", "name"])}
+        data={searchResults(["symbol", "name"])}
       >
-        <Table.Head className="bg-white/70 dark:bg-slate-900/90 shadow-md shadow-slate-500/10 dark:shadow-slate-900/40 gap-x-4">
+        <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4 dark:shadow-slate-900/40 dark:bg-slate-900/90">
           <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600 dark:text-slate-600/50">
             Sl.no
           </Table.Cell>
@@ -102,7 +102,7 @@ const Stocks = () => {
             (cellData: StockObjectType, id) => (
               <Table.Row
                 key={cellData.name}
-                className="py-3 px-4 hover:bg-white/40 hover:dark:bg-slate-900/40 gap-x-4"
+                className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40"
               >
                 <Table.Cell className="flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80 text-center">
                   {id + 1}

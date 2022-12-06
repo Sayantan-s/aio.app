@@ -26,7 +26,9 @@ const SortButtons = ({ className, onAscend, onDescend, order }: Props) => {
         >
           <path
             className={
-              order === "asc" ? "stroke-slate-300" : "stroke-slate-500"
+              order === "asc"
+                ? "stroke-slate-300 dark:stroke-slate-700"
+                : "stroke-slate-500"
             }
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -46,7 +48,9 @@ const SortButtons = ({ className, onAscend, onDescend, order }: Props) => {
         >
           <path
             className={
-              order === "desc" ? "stroke-slate-300" : "stroke-slate-500"
+              order === "desc"
+                ? "stroke-slate-300 dark:stroke-slate-700"
+                : "stroke-slate-500"
             }
             strokeLinecap="round"
             strokeLinejoin="round"

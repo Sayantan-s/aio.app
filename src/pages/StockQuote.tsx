@@ -81,7 +81,7 @@ const StockQuote = () => {
     <div className="absolute max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
       <motion.button
         whileTap={{ scale: 0.9 }}
-        className="flex items-center justify-center mb-4 bg-white/70 backdrop:blur-lg w-[36px] h-[36px] rounded-full shadow-lg shadow-purple-400/10"
+        className="flex items-center justify-center mb-4 bg-white/70 backdrop:blur-lg w-[36px] h-[36px] rounded-full shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-none dark:border-2 dark:border-slate-700/50"
         onClick={handleGoBack}
       >
         <svg
@@ -92,7 +92,7 @@ const StockQuote = () => {
           fill="none"
         >
           <path
-            className="stroke-slate-400"
+            className="stroke-slate-400 dark:stroke-slate-600"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeMiterlimit={10}
@@ -102,17 +102,17 @@ const StockQuote = () => {
         </svg>
       </motion.button>
       <Table
-        className="rounded-lg overflow-hidden shadow-purple-400/10 shadow-2xl"
+        className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl"
         data={stockQuotes}
       >
-        <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4">
-          <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600">
+        <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4 dark:shadow-slate-900/40 dark:bg-slate-900/90">
+          <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600 dark:text-slate-600/50">
             Sl.no
           </Table.Cell>
-          <Table.Cell className="flex-1 font-medium text-slate-600">
+          <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
             Price
           </Table.Cell>
-          <Table.Cell className=" flex flex-1 items-center font-medium text-slate-600">
+          <Table.Cell className=" flex flex-1 items-center font-medium text-slate-600 dark:text-slate-600/50">
             Time
             <SortButtons
               order={order.time}
@@ -121,33 +121,29 @@ const StockQuote = () => {
               onDescend={() => handleSort("time", "desc")}
             />
           </Table.Cell>
-          <Table.Cell className="flex flex-1 items-center font-medium text-slate-600">
+          <Table.Cell className="flex flex-1 items-center font-medium text-slate-600 dark:text-slate-600/50">
             Valid till
-            <SortButtons
-              order={order.valid_till}
-              className="ml-3"
-              onAscend={() => handleSort("valid_till", "asc")}
-              onDescend={() => handleSort("valid_till", "desc")}
-            />
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-scroll backdrop:blur-lg bg-white/50">
+        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60">
           {loading ? (
             <div className=" font-semibold text-lg">loading....</div>
           ) : (
             (cellData: StockQuoteType, id) => (
               <Table.Row
                 key={id}
-                className="py-3 px-4 hover:bg-white/40 gap-x-4"
+                className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40"
               >
-                <Table.Cell className="flex-[0.15] font-medium text-slate-300 text-center">
+                <Table.Cell className="flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80 text-center">
                   {id + 1}
                 </Table.Cell>
-                <Table.Cell className="flex-1 text-slate-500 font-medium">
+                <Table.Cell className="flex-1 font-semibold text-slate-500 dark:text-slate-400">
                   {cellData.price.toFixed(2)}
                 </Table.Cell>
-                <Table.Cell className="flex-1">{cellData.time}</Table.Cell>
-                <Table.Cell className="flex-1">
+                <Table.Cell className="flex-1 dark:text-slate-500">
+                  {cellData.time}
+                </Table.Cell>
+                <Table.Cell className="flex-1 dark:text-slate-500">
                   {handleTimeExpiration(cellData.valid_till)}
                 </Table.Cell>
               </Table.Row>
