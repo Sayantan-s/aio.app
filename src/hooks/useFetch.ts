@@ -1,14 +1,23 @@
 import axios, { AxiosInstance } from "axios";
-import { useEffect, useReducer, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 
 interface ReducerProps<TData, TError> {
   loading: boolean;
+  fetching: boolean;
   data: TData;
   error: TError;
 }
 
 type Action<TData, TError> =
   | { type: "LOADING" }
+  | { type: "FETCHING" }
   | { type: "SUCCESS"; payload: TData }
   | { type: "ERROR"; payload: TError }
   | { type: "UPDATE_DATA"; payload: TData };
@@ -25,18 +34,42 @@ interface Props<TApiSuccessResponse, TApiErrorResponse, TData, TError> {
   onError: (data: TApiErrorResponse) => TError;
 }
 
-type HookReturnType<D, E> = [ReducerProps<D, E>, (payload: D) => void];
+type HookReturnType<D, E> = [
+  ReducerProps<D, E>,
+  () => Promise<void>,
+  (payload: D) => void
+];
 
 const createReducer =
   <TData, TError>() =>
   (state: ReducerProps<TData, TError>, action: Action<TData, TError>) => {
     switch (action.type) {
       case "LOADING":
-        return { ...state, loading: true };
+        return {
+          ...state,
+          loading: true,
+          fetching: true,
+        };
+      case "FETCHING":
+        return {
+          ...state,
+          loading: false,
+          fetching: true,
+        };
       case "SUCCESS":
-        return { ...state, loading: false, data: action.payload };
+        return {
+          ...state,
+          loading: false,
+          fetching: false,
+          data: action.payload,
+        };
       case "ERROR":
-        return { ...state, loading: false, error: action.payload };
+        return {
+          ...state,
+          loading: false,
+          fetching: false,
+          error: action.payload,
+        };
       case "UPDATE_DATA":
         return { ...state, data: action.payload };
       default:
@@ -63,31 +96,40 @@ export const useFetch = <
   const reducer = createReducer<TData, TError>();
   const abortController = useRef<AbortController>();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isInitialFetchCall, setInitialFetchCall] = useState(true);
 
-  useEffect(() => {
-    async function fetcher() {
-      try {
-        abortController.current = new AbortController();
-        dispatch({ type: "LOADING" });
-        const { data } = await api.get<TApiSuccessResponse>(url, {
-          signal: abortController.current.signal,
-        });
-        const successData = onSuccess(data);
-        dispatch({ type: "SUCCESS", payload: successData });
-      } catch (e) {
-        if (axios.isAxiosError<TApiErrorResponse>(e)) {
-          if (e.name === "CanceledError") return;
-          const error = onError(e.response?.data!);
-          dispatch({ type: "ERROR", payload: error });
-        }
+  const fetcher = useCallback(async function fetcher() {
+    try {
+      abortController.current = new AbortController();
+      isInitialFetchCall
+        ? dispatch({ type: "LOADING" })
+        : dispatch({ type: "FETCHING" });
+      setInitialFetchCall(false);
+      const { data } = await api.get<TApiSuccessResponse>(url, {
+        signal: abortController.current.signal,
+      });
+      const successData = onSuccess(data);
+      dispatch({ type: "SUCCESS", payload: successData });
+    } catch (e) {
+      if (axios.isAxiosError<TApiErrorResponse>(e)) {
+        if (e.name === "CanceledError") return;
+        const error = onError(e.response?.data!);
+        dispatch({ type: "ERROR", payload: error });
       }
     }
-    fetcher();
-    return () => abortController.current?.abort();
   }, []);
 
-  return [
-    state,
-    (payload: TData) => dispatch({ type: "UPDATE_DATA", payload }),
-  ];
+  useEffect(() => {
+    fetcher();
+    return () => abortController.current?.abort();
+  }, [fetcher]);
+
+  return useMemo(
+    () => [
+      state,
+      fetcher,
+      (payload: TData) => dispatch({ type: "UPDATE_DATA", payload }),
+    ],
+    [state]
+  );
 };

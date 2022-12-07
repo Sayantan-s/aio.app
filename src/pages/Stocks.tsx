@@ -22,6 +22,7 @@ const Stocks = () => {
       api: sensibullApi,
     },
     initialState: {
+      fetching: false,
       loading: false,
       data: [],
       error: "",
@@ -48,6 +49,11 @@ const Stocks = () => {
 
   const { mode } = useMode();
 
+  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (eve) =>
+    setSearch(eve.target.value);
+
+  const handleSearchClear = () => setSearch("");
+
   const searchResults = useMemo(() => {
     return (keys: KeyOfStockHeadersType[]) => {
       const filteredSearch = sbullStocks.filter((stock) =>
@@ -59,11 +65,6 @@ const Stocks = () => {
     };
   }, [search, sbullStocks]);
 
-  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (eve) =>
-    setSearch(eve.target.value);
-
-  const handleSearchClear = () => setSearch("");
-
   const manipulateInnerHTML = (str: string) =>
     str.replace(
       new RegExp(search, "gi"),
@@ -73,8 +74,7 @@ const Stocks = () => {
 
   return (
     <div className="absolute max-xl:max-w-4xl max-lg:max-w-3xl max-md:p-4 max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
-      <div className="flex justify-between mb-4">
-        <h1 />
+      <div className="flex justify-end mb-4">
         <Search
           className="flex items-center gap-x-2 flex-1 max-w-xs bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10"
           value={search}
