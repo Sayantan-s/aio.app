@@ -20,7 +20,7 @@ interface FetchConfig {
   api: AxiosInstance;
 }
 
-interface Props<TApiSuccessResponse, TApiErrorResponse, TData, TError> {
+interface Props<TApiSuccessResponse, _TApiErrorResponse, TData, TError> {
   config: FetchConfig;
   initialState: Omit<ReducerProps<TData, TError>, "fetching" | "loading">;
   onSuccess: (data: TApiSuccessResponse) => TData;
@@ -94,9 +94,6 @@ export const useFetch = <
     loading: false,
   });
   const [isInitialFetchCall, setInitialFetchCall] = useState(true);
-  const [previousData, setPreviousData] = useState<TApiSuccessResponse | null>(
-    null
-  );
 
   const fetcher = useCallback(async () => {
     setInitialFetchCall(false);
@@ -108,15 +105,11 @@ export const useFetch = <
       const { data } = await api.get<TApiSuccessResponse>(url, {
         signal: abortController.current.signal,
       });
-      setPreviousData(data);
-      if (previousData && JSON.stringify(data) === JSON.stringify(previousData))
-        return;
       const successData = onSuccess(data);
       dispatch({ type: "SUCCESS", payload: successData });
     } catch (e) {
       if (axios.isAxiosError<TApiErrorResponse>(e)) {
         if (e.name === "CanceledError") return;
-        console.log(e.response?.data);
         const error = onError(e.response?.data as string);
         dispatch({ type: "ERROR", payload: error });
       }

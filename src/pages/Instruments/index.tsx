@@ -9,16 +9,17 @@ import {
 import { useFetch } from "@hooks";
 import { useCallback, useState } from "react";
 import { NavLink } from "react-router-dom";
-
-const stockHeaders = ["Symbol", "Name", "Sector"] as const;
-type KeyOfStockHeadersType = Lowercase<typeof stockHeaders[number]>;
-type StockObjectType = Record<KeyOfStockHeadersType, string>;
+import {
+  instrumentHeaders,
+  InstrumentObjectType,
+  KeyOfInstrumentHeadersType,
+} from "./Instrument.types";
 
 const Instruments = () => {
   const [{ loading, data: sbullStocks, error }] = useFetch<
     string,
     string,
-    Array<StockObjectType>,
+    Array<InstrumentObjectType>,
     string
   >({
     config: {
@@ -36,9 +37,9 @@ const Instruments = () => {
         .map((text) => text.split(","))
         .slice(1, -1);
       const stocksData = rows.map((cell) => {
-        let stockObj: StockObjectType = {} as StockObjectType;
-        stockHeaders.forEach((headerKey, index) => {
-          const key = headerKey.toLowerCase() as KeyOfStockHeadersType;
+        let stockObj: InstrumentObjectType = {} as InstrumentObjectType;
+        instrumentHeaders.forEach((headerKey, index) => {
+          const key = headerKey.toLowerCase() as KeyOfInstrumentHeadersType;
           stockObj[key] = cell[index];
         });
         return stockObj;
@@ -55,7 +56,7 @@ const Instruments = () => {
   const handleSearchClear = () => setSearch("");
 
   const searchResults = useCallback(
-    (keys: KeyOfStockHeadersType[]) => {
+    (keys: KeyOfInstrumentHeadersType[]) => {
       const filteredSearch = sbullStocks.filter((stock) =>
         keys.some((key) =>
           stock[key].toLowerCase().includes(search.toLowerCase())
@@ -110,7 +111,7 @@ const Instruments = () => {
           ) : error ? (
             <Error message={error} />
           ) : (
-            (cellData: StockObjectType, id) => (
+            (cellData: InstrumentObjectType, id) => (
               <Table.Row
                 key={cellData.name}
                 className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40 overflow-hidden"

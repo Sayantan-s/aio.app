@@ -7,31 +7,13 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-
-interface StockQuoteType {
-  price: number;
-  time: string;
-  valid_till: string;
-}
-
-interface StockQuoteWithValidityType extends StockQuoteType {
-  validity: "expired" | "ok";
-}
-
-interface StockQuotesApiResponseSuccessType {
-  success: true;
-  payload: {
-    [stockname: string]: Array<StockQuoteType>;
-  };
-}
-
-interface StockQuotesApiResponseErrorType {
-  success: false;
-  err_msg: string;
-}
-
-type SortableValues = "time";
-type Order = "asc" | "desc";
+import type {
+  InstrumentQuotesApiResponseErrorType,
+  InstrumentQuotesApiResponseSuccessType,
+  InstrumentQuoteWithValidityType,
+  Order,
+  SortableValues,
+} from "./Quotes.types";
 
 function UTCTimeValidity(value: string) {
   return new Date(`${value} UTC`).getTime() > new Date().getTime();
@@ -47,9 +29,9 @@ const Quotes = () => {
 
   const [{ loading, data: stockQuotes, error }, fetcher, setStockQuotes] =
     useFetch<
-      StockQuotesApiResponseSuccessType,
-      StockQuotesApiResponseErrorType,
-      Array<StockQuoteWithValidityType>,
+      InstrumentQuotesApiResponseSuccessType,
+      InstrumentQuotesApiResponseErrorType,
+      Array<InstrumentQuoteWithValidityType>,
       string
     >({
       config: {
@@ -71,12 +53,14 @@ const Quotes = () => {
 
   useInterval(1000, (runningInterval: number) => {
     if (error) clearInterval(runningInterval);
-    const quotes: StockQuoteWithValidityType[] = stockQuotes.map((quote) => {
-      return {
-        ...quote,
-        validity: UTCTimeValidity(quote.valid_till) ? "ok" : "expired",
-      };
-    });
+    const quotes: InstrumentQuoteWithValidityType[] = stockQuotes.map(
+      (quote) => {
+        return {
+          ...quote,
+          validity: UTCTimeValidity(quote.valid_till) ? "ok" : "expired",
+        };
+      }
+    );
     setStockQuotes(quotes);
     const hasEveryQuoteExpired = quotes.every(
       (quote) => quote.validity === "expired"
@@ -156,7 +140,7 @@ const Quotes = () => {
           ) : error ? (
             <Error message={error} />
           ) : (
-            (cellData: StockQuoteWithValidityType, id) => (
+            (cellData: InstrumentQuoteWithValidityType, id) => (
               <Table.Row
                 key={id}
                 className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40"
