@@ -1,16 +1,20 @@
 import { sensibullApi } from "@api";
-import { useMode } from "@components/helpers";
-import { Search, Table } from "@components/organisms";
+import {
+  Error,
+  HeaderPanel,
+  Loader,
+  Search,
+  Table,
+} from "@components/organisms";
 import { useFetch } from "@hooks";
-import { Player } from "@lottiefiles/react-lottie-player";
-import { useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const stockHeaders = ["Symbol", "Name", "Sector"] as const;
 type KeyOfStockHeadersType = Lowercase<typeof stockHeaders[number]>;
 type StockObjectType = Record<KeyOfStockHeadersType, string>;
 
-const Stocks = () => {
+const Instruments = () => {
   const [{ loading, data: sbullStocks, error }] = useFetch<
     string,
     string,
@@ -22,8 +26,6 @@ const Stocks = () => {
       api: sensibullApi,
     },
     initialState: {
-      fetching: false,
-      loading: false,
       data: [],
       error: "",
     },
@@ -47,34 +49,35 @@ const Stocks = () => {
 
   const [search, setSearch] = useState("");
 
-  const { mode } = useMode();
-
   const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (eve) =>
     setSearch(eve.target.value);
 
   const handleSearchClear = () => setSearch("");
 
-  const searchResults = useMemo(() => {
-    return (keys: KeyOfStockHeadersType[]) => {
+  const searchResults = useCallback(
+    (keys: KeyOfStockHeadersType[]) => {
       const filteredSearch = sbullStocks.filter((stock) =>
         keys.some((key) =>
           stock[key].toLowerCase().includes(search.toLowerCase())
         )
       );
       return filteredSearch;
-    };
-  }, [search, sbullStocks]);
+    },
+    [search, sbullStocks]
+  );
 
   const manipulateInnerHTML = (str: string) =>
-    str.replace(
-      new RegExp(search, "gi"),
-      (match) =>
-        `<mark class="bg-pink-500/20 text-pink-700 rounded">${match}</mark>`
-    );
+    search
+      ? str.replace(
+          new RegExp(search, "gi"),
+          (match) =>
+            `<mark class="bg-pink-500/20 text-pink-500 dark:text-pink-700 rounded">${match}</mark>`
+        )
+      : str;
 
   return (
     <div className="absolute max-xl:max-w-4xl max-lg:max-w-3xl max-md:p-4 max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
-      <div className="flex justify-end mb-4">
+      <HeaderPanel>
         <Search
           className="flex items-center gap-x-2 flex-1 max-w-xs bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10"
           value={search}
@@ -82,7 +85,7 @@ const Stocks = () => {
           onSearchClear={handleSearchClear}
           placeholder={"Havell's India or SBI.."}
         />
-      </div>
+      </HeaderPanel>
       <Table
         className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl max-md:min-w-[768px]"
         data={searchResults(["symbol", "name"])}
@@ -101,26 +104,21 @@ const Stocks = () => {
             Category
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60 relative">
+        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60">
           {loading ? (
-            <Player
-              autoplay
-              loop
-              src={
-                mode === "dark" ? "/loading_dark.json" : "/loading_light.json"
-              }
-              className="w-12 h-12 opacity-40 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-            />
+            <Loader />
+          ) : error ? (
+            <Error message={error} />
           ) : (
             (cellData: StockObjectType, id) => (
               <Table.Row
                 key={cellData.name}
-                className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40"
+                className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40 overflow-hidden"
               >
-                <Table.Cell className="flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80 text-center">
+                <Table.Cell className="flex justify-center items-center flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80">
                   {id + 1}
                 </Table.Cell>
-                <Table.Cell className="flex-1 max-lg:flex-[0.5]">
+                <Table.Cell className="flex items-center flex-1 max-lg:flex-[0.5]">
                   <span className="bg-white dark:bg-slate-900/70 rounded-md px-2 py-1">
                     <NavLink
                       to={`/${cellData.symbol.toLowerCase()}`}
@@ -132,12 +130,12 @@ const Stocks = () => {
                   </span>
                 </Table.Cell>
                 <Table.Cell
-                  className="flex-1 dark:text-slate-500"
+                  className=" flex items-center flex-1 dark:text-slate-500"
                   dangerouslySetInnerHTML={{
                     __html: manipulateInnerHTML(cellData.name),
                   }}
                 />
-                <Table.Cell className="flex-1 dark:text-slate-500">
+                <Table.Cell className=" flex items-center flex-1 dark:text-slate-500">
                   {cellData.sector || <span className="text-slate-400">-</span>}
                 </Table.Cell>
               </Table.Row>
@@ -149,4 +147,4 @@ const Stocks = () => {
   );
 };
 
-export default Stocks;
+export default Instruments;

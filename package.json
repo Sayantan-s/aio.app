@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "yarn build && yarn preview"
   },
   "dependencies": {
     "@lottiefiles/react-lottie-player": "^3.4.9",

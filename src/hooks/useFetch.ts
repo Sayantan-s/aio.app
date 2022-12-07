@@ -1,12 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
 interface ReducerProps<TData, TError> {
   loading: boolean;
@@ -29,9 +22,9 @@ interface FetchConfig {
 
 interface Props<TApiSuccessResponse, TApiErrorResponse, TData, TError> {
   config: FetchConfig;
-  initialState: ReducerProps<TData, TError>;
+  initialState: Omit<ReducerProps<TData, TError>, "fetching" | "loading">;
   onSuccess: (data: TApiSuccessResponse) => TData;
-  onError: (data: TApiErrorResponse) => TError;
+  onError: (data: string) => TError;
 }
 
 type HookReturnType<D, E> = [
@@ -95,25 +88,36 @@ export const useFetch = <
 >): HookReturnType<TData, TError> => {
   const reducer = createReducer<TData, TError>();
   const abortController = useRef<AbortController>();
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    fetching: false,
+    loading: false,
+  });
   const [isInitialFetchCall, setInitialFetchCall] = useState(true);
+  const [previousData, setPreviousData] = useState<TApiSuccessResponse | null>(
+    null
+  );
 
-  const fetcher = useCallback(async function fetcher() {
+  const fetcher = useCallback(async () => {
+    setInitialFetchCall(false);
     try {
       abortController.current = new AbortController();
       isInitialFetchCall
         ? dispatch({ type: "LOADING" })
         : dispatch({ type: "FETCHING" });
-      setInitialFetchCall(false);
       const { data } = await api.get<TApiSuccessResponse>(url, {
         signal: abortController.current.signal,
       });
+      setPreviousData(data);
+      if (previousData && JSON.stringify(data) === JSON.stringify(previousData))
+        return;
       const successData = onSuccess(data);
       dispatch({ type: "SUCCESS", payload: successData });
     } catch (e) {
       if (axios.isAxiosError<TApiErrorResponse>(e)) {
         if (e.name === "CanceledError") return;
-        const error = onError(e.response?.data!);
+        console.log(e.response?.data);
+        const error = onError(e.response?.data as string);
         dispatch({ type: "ERROR", payload: error });
       }
     }
@@ -124,12 +128,9 @@ export const useFetch = <
     return () => abortController.current?.abort();
   }, [fetcher]);
 
-  return useMemo(
-    () => [
-      state,
-      fetcher,
-      (payload: TData) => dispatch({ type: "UPDATE_DATA", payload }),
-    ],
-    [state]
-  );
+  return [
+    state,
+    fetcher,
+    (payload: TData) => dispatch({ type: "UPDATE_DATA", payload }),
+  ];
 };

@@ -1,3 +1,4 @@
+import { UpArrow } from "@components/icons";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 import {
   createContext,
@@ -120,22 +121,10 @@ const Body = <TData,>({
             exit={{ x: 30, opacity: 0 }}
             className="fixed bg-white shadow-sm shadow-slate-300/50 rounded-full bottom-6 right-6 w-8 h-8 flex justify-center items-center dark:bg-slate-900 dark:shadow-none dark:border-2 dark:border-slate-800/50"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width={18}
-              height={18}
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                className="stroke-slate-700 dark:stroke-slate-600"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeMiterlimit={10}
-                strokeWidth="1.5"
-                d="M19.92 15.05L13.4 8.53c-.77-.77-2.03-.77-2.8 0l-6.52 6.52"
-              />
-            </svg>
+            <UpArrow
+              size={18}
+              className="stroke-slate-700 dark:stroke-slate-600/60"
+            />
           </motion.button>
         )}
       </AnimatePresence>

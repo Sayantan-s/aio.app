@@ -1,3 +1,3 @@
-import StockQuote from "./StockQuote";
-import Stocks from "./Stocks";
-export { StockQuote, Stocks };
+import Instruments from "./Instruments";
+import Quotes from "./Quotes";
+export { Quotes, Instruments };
