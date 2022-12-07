@@ -1,9 +1,17 @@
+# Guidlines
+
+Run `yarn start:scratch` to build the frontend and run the dev server.
+<br />
+<br />
+
 # Design
 
 <b>Took inspirations from the below designs</b>
 
 ![x](https://cdn.dribbble.com/users/268582/screenshots/19835281/media/dc80f1209beb1716a0d1ba363dd36588.png?compress=1&resize=1600x1200&vertical=top)
 ![y](https://cdn.dribbble.com/users/209146/screenshots/15739263/media/3f3a541b206c67346a43cf849fb506e1.jpg?compress=1&resize=1600x1200&vertical=top)
+<br />
+<br />
 
 # Architecture
 
@@ -22,5 +30,5 @@
 
 # Improvements Required
 
-- Its better to maintain a bi-directional connection incase of the quotes page using websockets, cause when the quotes expire, if it becomes a 1000 clients and one server, the server might recieve a 1000 requests almost at the same time, which may crash the server if not properly load balanced. So, its better to maintain a p2p connection and handle the quotes expiry in the backend and whenever the quotes expires,emit a message with the new updated stock quote data, which will be received from the frontend and potraited in the UI. Hence the data flows from server to the clients only.
-- Better to use semantics in case of the table if the page needs to have SEO benefits or else keep it generic but making the whole component polymorphic and leave it to the developer to decide it's tags using the 'as'(convention) prop.
+- Its better to maintain a bi-directional connection, incase of the quotes page using websockets, cause when the quotes expire, if it becomes a 1000 clients and one server, the server might recieve a 1000 requests almost at the same time, which may crash the server if not properly load balanced. So, its better to maintain a p2p connection and handle the quotes expiry in the backend and whenever the quotes expires,emit a message with the new updated instrument quote data, which will be received from the frontend and potraited in the UI. Hence the data flows from server to the clients only.
+- Better to use semantics in case of the table if the page needs to have SEO benefits or else keeping it generic but making the whole component polymorphic and leaving it to the developer to decide it's tag using the 'as'(convention) prop.
