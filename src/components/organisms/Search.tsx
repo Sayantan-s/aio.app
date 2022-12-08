@@ -1,5 +1,6 @@
 import { Close, SearchIcon } from "@components/icons";
 import { motion } from "framer-motion";
+import { memo } from "react";
 
 interface Props {
   className?: string;
@@ -38,4 +39,4 @@ const Search = ({
   );
 };
 
-export default Search;
+export default memo(Search);

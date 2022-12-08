@@ -50,22 +50,21 @@ const Instruments = () => {
 
   const [search, setSearch] = useState("");
 
-  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (eve) =>
-    setSearch(eve.target.value);
-
-  const handleSearchClear = () => setSearch("");
-
-  const searchResults = useCallback(
-    (keys: KeyOfInstrumentHeadersType[]) => {
-      const filteredSearch = sbullStocks.filter((stock) =>
-        keys.some((key) =>
-          stock[key].toLowerCase().includes(search.toLowerCase())
-        )
-      );
-      return filteredSearch;
-    },
-    [search, sbullStocks]
+  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (eve) => setSearch(eve.target.value),
+    []
   );
+
+  const handleSearchClear = useCallback(() => setSearch(""), []);
+
+  const searchResults = (keys: KeyOfInstrumentHeadersType[]) => {
+    const filteredSearch = sbullStocks.filter((stock) =>
+      keys.some((key) =>
+        stock[key].toLowerCase().includes(search.toLowerCase())
+      )
+    );
+    return filteredSearch;
+  };
 
   const manipulateInnerHTML = (str: string) =>
     search

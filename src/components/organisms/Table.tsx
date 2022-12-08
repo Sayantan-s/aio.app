@@ -2,10 +2,8 @@ import { UpArrow } from "@components/icons";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 import {
   createContext,
-  memo,
   PropsWithChildren,
   useContext,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -38,9 +36,8 @@ type TableCellProps = Partial<TableRowProps>;
 const TableContext = createContext<ContextProps | null>(null);
 
 const TableRoot = <TData,>({ children, data, ...props }: TableProps<TData>) => {
-  const memoizedValues = useMemo(() => data, [data]);
   return (
-    <TableContext.Provider value={{ data: memoizedValues }}>
+    <TableContext.Provider value={{ data }}>
       <motion.div {...props}>{children}</motion.div>
     </TableContext.Provider>
   );
@@ -136,4 +133,4 @@ const Cell = ({ children, ...rest }: TableCellProps) => (
   <motion.div {...rest}>{children}</motion.div>
 );
 
-export let Table = Object.assign(memo(TableRoot), { Head, Row, Cell, Body });
+export let Table = Object.assign(TableRoot, { Head, Row, Cell, Body });

@@ -1,7 +1,7 @@
 import React, {
   PropsWithChildren,
   useContext,
-  useLayoutEffect,
+  useEffect,
   useState,
 } from "react";
 
@@ -15,12 +15,17 @@ interface ContextProps {
 const Context = React.createContext<ContextProps>({ mode: "dark" });
 
 export const ThemeContext = ({ children }: PropsWithChildren) => {
-  const [mode, setMode] = useState<Mode>("dark");
+  const [mode, setMode] = useState<Mode>(
+    () => (localStorage.getItem("mode") as Mode) || "dark"
+  );
 
-  const modeSwitcher = () =>
-    setMode((prevState) => (prevState === "dark" ? "light" : "dark"));
+  const modeSwitcher = () => {
+    const value = mode === "dark" ? "light" : "dark";
+    localStorage.setItem("mode", value);
+    setMode(value);
+  };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     mode === "dark"
       ? document.documentElement.classList.add("dark")
       : document.documentElement.classList.remove("dark");
