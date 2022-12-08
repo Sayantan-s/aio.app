@@ -3,17 +3,18 @@ import {
   Error,
   HeaderPanel,
   Loader,
+  Pagewrap,
   Search,
   Table,
 } from "@components/organisms";
 import { useFetch } from "@hooks";
 import { useCallback, useState } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  instrumentHeaders,
+import type {
   InstrumentObjectType,
   KeyOfInstrumentHeadersType,
 } from "./Instrument.types";
+import { instrumentHeaders } from "./Instrument.types";
 
 const Instruments = () => {
   const [{ loading, data: sbullStocks, error }] = useFetch<
@@ -76,21 +77,18 @@ const Instruments = () => {
       : str;
 
   return (
-    <div className="absolute max-xl:max-w-4xl max-lg:max-w-3xl max-md:p-4 max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+    <Pagewrap>
       <HeaderPanel>
         <Search
-          className="flex items-center gap-x-2 flex-1 max-w-xs bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10"
+          className="flex items-center gap-x-2 flex-1 max-w-xs max-lg:max-w-full max-lg:w-full bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10"
           value={search}
           onSearch={handleSearch}
           onSearchClear={handleSearchClear}
           placeholder={"Havell's India or SBI.."}
         />
       </HeaderPanel>
-      <Table
-        className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl max-md:min-w-[768px]"
-        data={searchResults(["symbol", "name"])}
-      >
-        <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4 dark:shadow-slate-900/40 dark:bg-slate-900/90">
+      <Table data={searchResults(["symbol", "name"])}>
+        <Table.Head>
           <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600 dark:text-slate-600/50">
             Sl.no
           </Table.Cell>
@@ -104,17 +102,14 @@ const Instruments = () => {
             Category
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60">
+        <Table.Body>
           {loading ? (
             <Loader />
           ) : error ? (
             <Error message={error} />
           ) : (
             (cellData: InstrumentObjectType, id) => (
-              <Table.Row
-                key={cellData.name}
-                className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40 overflow-hidden"
-              >
+              <Table.Row key={cellData.name}>
                 <Table.Cell className="flex justify-center items-center flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80">
                   {id + 1}
                 </Table.Cell>
@@ -143,7 +138,7 @@ const Instruments = () => {
           )}
         </Table.Body>
       </Table>
-    </div>
+    </Pagewrap>
   );
 };
 

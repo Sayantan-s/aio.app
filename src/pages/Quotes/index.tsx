@@ -1,9 +1,14 @@
 import { sensibullApi } from "@api";
-import { useMode } from "@components/helpers";
 import { LeftArrow } from "@components/icons";
-import { Error, HeaderPanel, SortButtons, Table } from "@components/organisms";
+import {
+  Error,
+  HeaderPanel,
+  Loader,
+  Pagewrap,
+  SortButtons,
+  Table,
+} from "@components/organisms";
 import { useFetch, useInterval } from "@hooks";
-import { Player } from "@lottiefiles/react-lottie-player";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -22,7 +27,6 @@ function UTCTimeValidity(value: string) {
 const Quotes = () => {
   const { instrument } = useParams();
   const navigate = useNavigate();
-  const { mode } = useMode();
   const [order, setOrder] = useState<Record<SortableValues, Order | null>>({
     time: null,
   });
@@ -52,7 +56,10 @@ const Quotes = () => {
     });
 
   useInterval(1000, (runningInterval: number) => {
-    if (error) clearInterval(runningInterval);
+    if (error) {
+      clearInterval(runningInterval);
+      return;
+    }
     const quotes: InstrumentQuoteWithValidityType[] = stockQuotes.map(
       (quote) => {
         return {
@@ -90,21 +97,18 @@ const Quotes = () => {
   const handleGoBack = () => navigate(-1);
 
   return (
-    <div className="absolute max-xl:max-w-4xl max-lg:max-w-3xl max-md:p-4 max-w-5xl w-full top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+    <Pagewrap>
       <HeaderPanel>
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="flex items-center justify-center  bg-white/70 backdrop:blur-lg w-[36px] h-[36px] rounded-full shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-none dark:border-2 dark:border-slate-700/50"
+          className="flex items-center justify-center bg-white/70 backdrop:blur-lg w-[36px] h-[36px] rounded-full shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-none dark:border-2 dark:border-slate-700/50"
           onClick={handleGoBack}
         >
           <LeftArrow size={16} />
         </motion.button>
       </HeaderPanel>
-      <Table
-        className="rounded-lg overflow-hidden shadow-purple-400/10 dark:shadow-purple-900/10 shadow-2xl max-md:min-w-[768px]"
-        data={stockQuotes}
-      >
-        <Table.Head className="bg-white/70 shadow-md shadow-slate-500/10 gap-x-4 dark:shadow-slate-900/40 dark:bg-slate-900/90">
+      <Table data={stockQuotes}>
+        <Table.Head>
           <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600 dark:text-slate-600/50">
             Sl.no
           </Table.Cell>
@@ -127,24 +131,14 @@ const Quotes = () => {
             Status
           </Table.Cell>
         </Table.Head>
-        <Table.Body className="h-[40rem] overflow-y-scroll backdrop:blur-lg bg-white/50 dark:bg-slate-900/60 relative">
+        <Table.Body>
           {loading ? (
-            <Player
-              autoplay
-              loop
-              src={
-                mode === "dark" ? "/loading_dark.json" : "/loading_light.json"
-              }
-              className="w-12 h-12 opacity-40 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-            />
+            <Loader />
           ) : error ? (
             <Error message={error} />
           ) : (
             (cellData: InstrumentQuoteWithValidityType, id) => (
-              <Table.Row
-                key={id}
-                className="py-3 px-4 hover:bg-white/40 gap-x-4 hover:dark:bg-slate-900/40"
-              >
+              <Table.Row key={id}>
                 <Table.Cell className="flex items-center justify-center flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80">
                   {id + 1}
                 </Table.Cell>
@@ -159,7 +153,7 @@ const Quotes = () => {
                 </Table.Cell>
                 <Table.Cell className="flex-[0.3] flex justify-end dark:text-slate-500">
                   <span
-                    className={`px-2 py-0.5 uppercase font-semibold rounded-md ${
+                    className={`px-3 py-0.5 uppercase font-semibold rounded-full ${
                       cellData.validity === "expired"
                         ? "text-rose-500 dark:text-rose-600 bg-rose-500/10"
                         : " text-emerald-500 dark:text-emerald-600 bg-emerald-500/10"
@@ -173,7 +167,7 @@ const Quotes = () => {
           )}
         </Table.Body>
       </Table>
-    </div>
+    </Pagewrap>
   );
 };
 

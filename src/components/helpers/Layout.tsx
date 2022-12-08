@@ -1,4 +1,5 @@
-import React from "react";
+import { _ } from "@utils";
+import React, { useMemo } from "react";
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -10,12 +11,16 @@ interface Props
 }
 
 export const Layout = ({ children, className, ...rest }: Props) => {
-  const styles = [
-    `mx-auto`,
-    "h-screen",
-    "overflow-hidden",
-    ...(className ? className.split(" ") : []),
-  ].join(" ");
+  const styles = useMemo(
+    () =>
+      _.classNames(
+        `mx-auto`,
+        "h-screen",
+        "overflow-hidden",
+        className?.split(" ") || null
+      ),
+    []
+  );
 
   return (
     <div className={styles} {...rest}>

@@ -1,4 +1,6 @@
 import { DownArrow, UpArrow } from "@components/icons";
+import { _ } from "@utils";
+import { useMemo } from "react";
 
 type Order = "asc" | "desc";
 
@@ -10,11 +12,10 @@ interface Props {
 }
 
 const SortButtons = ({ className, onAscend, onDescend, order }: Props) => {
-  const styles = [
-    `flex`,
-    "flex-col",
-    ...(className ? className.split(" ") : []),
-  ].join(" ");
+  const styles = useMemo(
+    () => _.classNames(`flex`, "flex-col", className?.split(" ") || null),
+    []
+  );
 
   return (
     <div className={styles}>
