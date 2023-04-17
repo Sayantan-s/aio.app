@@ -3,22 +3,19 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 
 interface Props {
-  className?: string;
   onSearch: React.ChangeEventHandler<HTMLInputElement>;
   value: string;
   onSearchClear: () => void;
   placeholder?: string;
 }
 
-const Search = ({
-  className,
-  value,
-  placeholder,
-  onSearch,
-  onSearchClear,
-}: Props) => {
+const Search = ({ value, placeholder, onSearch, onSearchClear }: Props) => {
   return (
-    <motion.div className={className || ""}>
+    <motion.div
+      className={
+        "flex items-center gap-x-2 flex-1 max-w-xs max-lg:max-w-full max-lg:w-full bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-purple-400/10 dark:shadow-none dark:bg-slate-900/50"
+      }
+    >
       <SearchIcon size={18} className="fill-slate-400 dark:fill-slate-700" />
       <input
         type={"text"}
@@ -27,7 +24,7 @@ const Search = ({
         placeholder={placeholder}
         onChange={onSearch}
       />
-      {value ? (
+      {value.trim() ? (
         <button onClick={onSearchClear}>
           <Close
             size={20}

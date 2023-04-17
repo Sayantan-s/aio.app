@@ -6,7 +6,7 @@ interface Props {
 
 const HeaderPanel = ({ children }: Props) => {
   return (
-    <div className="flex gap-x-2 justify-between items-center mb-4 ">
+    <div className="flex items-stretch gap-x-2 justify-between mb-4">
       {children}
       <DarkModeToggler />
     </div>

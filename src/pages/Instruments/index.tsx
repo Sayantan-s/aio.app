@@ -1,53 +1,12 @@
-import { sensibullApi } from "@api";
-import {
-  Error,
-  HeaderPanel,
-  Loader,
-  Pagewrap,
-  Search,
-  Table,
-} from "@components/organisms";
-import { useFetch } from "@hooks";
+import { HeaderPanel, Search } from "@components/organisms";
+import { useGetCoins } from "@hooks";
+import millify from "millify";
 import { useCallback, useState } from "react";
 import { NavLink } from "react-router-dom";
-import type {
-  InstrumentObjectType,
-  KeyOfInstrumentHeadersType,
-} from "./Instrument.types";
-import { instrumentHeaders } from "./Instrument.types";
+import type { KeyOfInstrumentHeadersType } from "./Instrument.types";
 
 const Instruments = () => {
-  const [{ loading, data: sbullStocks, error }] = useFetch<
-    string,
-    string,
-    Array<InstrumentObjectType>,
-    string
-  >({
-    config: {
-      url: "/instruments",
-      api: sensibullApi,
-    },
-    initialState: {
-      data: [],
-      error: "",
-    },
-    onError: (error) => error,
-    onSuccess: (data) => {
-      const rows = data
-        .split("\n")
-        .map((text) => text.split(","))
-        .slice(1, -1);
-      const stocksData = rows.map((cell) => {
-        let stockObj: InstrumentObjectType = {} as InstrumentObjectType;
-        instrumentHeaders.forEach((headerKey, index) => {
-          const key = headerKey.toLowerCase() as KeyOfInstrumentHeadersType;
-          stockObj[key] = cell[index];
-        });
-        return stockObj;
-      });
-      return stocksData;
-    },
-  });
+  const { isInitialLoading, data } = useGetCoins();
 
   const [search, setSearch] = useState("");
 
@@ -59,7 +18,7 @@ const Instruments = () => {
   const handleSearchClear = useCallback(() => setSearch(""), []);
 
   const searchResults = (keys: KeyOfInstrumentHeadersType[]) => {
-    const filteredSearch = sbullStocks.filter((stock) =>
+    const filteredSearch = data?.data.coins.filter((stock: any) =>
       keys.some((key) =>
         stock[key].toLowerCase().includes(search.toLowerCase())
       )
@@ -76,69 +35,95 @@ const Instruments = () => {
         )
       : str;
 
+  //searchResults(["symbol", "name"])
+
+  console.log(data);
+
   return (
-    <Pagewrap>
+    <div>
       <HeaderPanel>
         <Search
-          className="flex items-center gap-x-2 flex-1 max-w-xs max-lg:max-w-full max-lg:w-full bg-white/70 backdrop:blur-lg py-2 px-3 rounded-md shadow-lg shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10"
           value={search}
           onSearch={handleSearch}
           onSearchClear={handleSearchClear}
           placeholder={"Havell's India or SBI.."}
         />
       </HeaderPanel>
-      <Table data={searchResults(["symbol", "name"])}>
-        <Table.Head>
-          <Table.Cell className="flex-[0.15] text-center font-medium text-slate-600 dark:text-slate-600/50">
-            Sl.no
-          </Table.Cell>
-          <Table.Cell className="flex-1 max-lg:flex-[0.5] font-medium text-slate-600 dark:text-slate-600/50">
-            Symbol
-          </Table.Cell>
-          <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
-            Name
-          </Table.Cell>
-          <Table.Cell className="flex-1 font-medium text-slate-600 dark:text-slate-600/50">
-            Category
-          </Table.Cell>
-        </Table.Head>
-        <Table.Body>
-          {loading ? (
-            <Loader />
-          ) : error ? (
-            <Error message={error} />
-          ) : (
-            (cellData: InstrumentObjectType, id) => (
-              <Table.Row key={cellData.name}>
-                <Table.Cell className="flex justify-center items-center flex-[0.15] font-medium text-slate-300 dark:text-slate-700/80">
-                  {id + 1}
-                </Table.Cell>
-                <Table.Cell className="flex items-center flex-1 max-lg:flex-[0.5]">
-                  <span className="bg-white dark:bg-slate-900/70 rounded-md px-2 py-1">
-                    <NavLink
-                      to={`/${cellData.symbol.toLowerCase()}`}
-                      className="text-transparent bg-clip-text bg-gradient-to-br from-pink-300 via-purple-500 to-blue-500 font-semibold"
-                      dangerouslySetInnerHTML={{
-                        __html: manipulateInnerHTML(cellData.symbol),
-                      }}
-                    />
-                  </span>
-                </Table.Cell>
-                <Table.Cell
-                  className=" flex items-center flex-1 dark:text-slate-500"
-                  dangerouslySetInnerHTML={{
-                    __html: manipulateInnerHTML(cellData.name),
-                  }}
-                />
-                <Table.Cell className=" flex items-center flex-1 dark:text-slate-500">
-                  {cellData.sector || <span className="text-slate-400">-</span>}
-                </Table.Cell>
-              </Table.Row>
-            )
-          )}
-        </Table.Body>
-      </Table>
-    </Pagewrap>
+      <div className="flex space-x-4">
+        <div className="grid grid-cols-2 gap-4 dark:bg-slate-900/50 rounded-lg p-4">
+          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+            <h1 className="text-slate-400/40">Total Cryptocurrencies</h1>
+            <p className="text-4xl mt-3.5 text-slate-50/70">
+              {data?.data.stats?.totalCoins!}
+            </p>
+          </div>
+          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+            <h1 className="text-slate-400/40">Total Exchanges</h1>
+            <p className="text-4xl mt-3.5 text-slate-50/70">
+              {millify(data?.data.stats?.totalExchanges!)}
+            </p>
+          </div>
+          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+            <h1 className="text-slate-400/40">Total MarketCap</h1>
+            <p className="text-4xl mt-3.5 text-slate-50/70">
+              {millify(+data?.data.stats?.totalMarketCap!)}
+            </p>
+          </div>
+          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+            <h1 className="text-slate-400/40">Total Markets</h1>
+            <p className="text-4xl mt-3.5 text-slate-50/70">
+              {millify(data?.data.stats?.totalMarkets!)}
+            </p>
+          </div>
+          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+            <h1 className="text-slate-400/40">Total 24th Volume</h1>
+            <p className="text-4xl mt-3.5 text-slate-50/70">
+              {millify(+data?.data.stats?.total24hVolume!)}
+            </p>
+          </div>
+        </div>
+        <div id="coin-list" className="flex-[0.9]">
+          <div className="h-96 overflow-auto rounded-lg">
+            <div className="overflow-hidden dark:bg-slate-900/50 px-3 py-1.5">
+              {data?.data.coins.map((coin) => (
+                <div
+                  key={coin.uuid}
+                  className="flex space-x-5 items-center py-2"
+                >
+                  <div className="w-7">
+                    <img src={coin.iconUrl} alt={`coin__${coin.name}`} />
+                  </div>
+                  <NavLink
+                    to={`#${coin.name}`}
+                    className="flex-[0.3] font-medium text-slate-50/70"
+                  >
+                    {coin.name}
+                  </NavLink>
+                  <div className="flex-[0.4]">
+                    <span className="text-slate-50/5">$</span>{" "}
+                    {(+coin.price).toFixed(2)}{" "}
+                  </div>
+                  <div
+                    className={`rounded-full h-7 aspect-video flex items-center justify-center text-xs flex-[0.1] ${
+                      +coin.change > 0
+                        ? "text-emerald-500 bg-emerald-800/20"
+                        : "text-rose-500 bg-rose-800/20"
+                    }`}
+                  >
+                    {coin.change}
+                  </div>
+                  <div className="flex-[0.3]">Chart</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div
+          id="coin-list"
+          className="flex-[0.5] dark:bg-slate-900/50 rounded-lg"
+        ></div>
+      </div>
+    </div>
   );
 };
 
