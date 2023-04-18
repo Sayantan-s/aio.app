@@ -1,10 +1,15 @@
 import { queryFn } from "@api";
-import { useQuery } from "@tanstack/react-query";
-import { ICoinResponse } from "./coin.types";
+import { QueryKey, UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { ICoinsResponse } from "./coin.types";
 
-export const useGetCoins = () =>
-  useQuery<ICoinResponse>({
+export const useGetCoins = (
+  options?: Omit<
+    UseQueryOptions<ICoinsResponse, unknown, ICoinsResponse, QueryKey>,
+    "initialData"
+  >
+) =>
+  useQuery<ICoinsResponse>({
     queryKey: ["coins"],
     queryFn: () => queryFn("/coins", { limit: 15, offset: 0 }),
-    // refetchInterval: 60 * 1000,
+    ...(options || {}),
   });

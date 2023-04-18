@@ -28,4 +28,4 @@ export interface IStats {
   totalMarkets: number;
 }
 
-export type ICoinResponse = ApiResponse<{ coins: ICoin[]; stats: IStats }>;
+export type ICoinsResponse = ApiResponse<{ coins: ICoin[]; stats: IStats }>;

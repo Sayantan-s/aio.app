@@ -1,46 +1,59 @@
-import { HeaderPanel, Search } from "@components/organisms";
-import { useGetCoins } from "@hooks";
+import { BorderedCard, HeaderPanel, Search } from "@components/organisms";
+import { useGetCoin, useGetCoins } from "@hooks";
+import { TCoin } from "@hooks/useGetCoin/coin.type";
 import millify from "millify";
 import { useCallback, useState } from "react";
 import { NavLink } from "react-router-dom";
-import type { KeyOfInstrumentHeadersType } from "./Instrument.types";
 
 const Instruments = () => {
-  const { isInitialLoading, data } = useGetCoins();
-
   const [search, setSearch] = useState("");
+  const [selectedCoinId, setSelectedCoinId] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedCoin, setSelectedCoin] = useState<TCoin>();
+  const { isInitialLoading, data: coins } = useGetCoins({
+    refetchOnWindowFocus: false,
+    onSuccess: (coins) => {
+      setSelectedCoinId(coins.data.coins[0].uuid);
+    },
+  });
+  const { isInitialLoading: isFetchingInitially, data: coin } = useGetCoin(
+    selectedCoinId as string,
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        setSelectedCoin(data.data.coin);
+      },
+    }
+  );
 
   const handleSearch: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    (eve) => setSearch(eve.target.value),
+    (eve) => {
+      setSearch(eve.target.value);
+    },
     []
   );
 
-  const handleSearchClear = useCallback(() => setSearch(""), []);
+  const handleSelectCoin = (id: string) => setSelectedCoinId(id);
 
-  const searchResults = (keys: KeyOfInstrumentHeadersType[]) => {
-    const filteredSearch = data?.data.coins.filter((stock: any) =>
-      keys.some((key) =>
-        stock[key].toLowerCase().includes(search.toLowerCase())
-      )
+  const handleSearchClear = useCallback(() => setSearch(""), []);
+  const searchResults = () => {
+    const filteredSearch = coins?.data.coins.filter((stock) =>
+      stock.name.toLowerCase().includes(search.toLowerCase())
     );
     return filteredSearch;
   };
-
   const manipulateInnerHTML = (str: string) =>
     search
       ? str.replace(
           new RegExp(search, "gi"),
           (match) =>
-            `<mark class="bg-pink-500/20 text-pink-500 dark:text-pink-700 rounded">${match}</mark>`
+            `<mark class="text-pink-500 dark:text-pink-700 dark:bg-pink-700/25 text-md">${match}</mark>`
         )
       : str;
 
-  //searchResults(["symbol", "name"])
-
-  console.log(data);
-
   return (
-    <div>
+    <div className="h-full flex flex-col space-y-4">
       <HeaderPanel>
         <Search
           value={search}
@@ -50,78 +63,124 @@ const Instruments = () => {
         />
       </HeaderPanel>
       <div className="flex space-x-4">
-        <div className="grid grid-cols-2 gap-4 dark:bg-slate-900/50 rounded-lg p-4">
-          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+        <div className="grid grid-cols-2 gap-4 dark:bg-slate-900/50 rounded-lg p-4 aspect-video flex-[0.4]">
+          <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total Cryptocurrencies</h1>
-            <p className="text-4xl mt-3.5 text-slate-50/70">
-              {data?.data.stats?.totalCoins!}
-            </p>
-          </div>
-          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+              {coins?.data.stats?.totalCoins!}
+            </p>{" "}
+          </BorderedCard>
+          <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total Exchanges</h1>
-            <p className="text-4xl mt-3.5 text-slate-50/70">
-              {millify(data?.data.stats?.totalExchanges!)}
+            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+              {millify(coins?.data.stats?.totalExchanges!)}
             </p>
-          </div>
-          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+          </BorderedCard>
+          <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total MarketCap</h1>
-            <p className="text-4xl mt-3.5 text-slate-50/70">
-              {millify(+data?.data.stats?.totalMarketCap!)}
+            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+              {millify(+coins?.data.stats?.totalMarketCap!)}
             </p>
-          </div>
-          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+          </BorderedCard>
+          <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total Markets</h1>
-            <p className="text-4xl mt-3.5 text-slate-50/70">
-              {millify(data?.data.stats?.totalMarkets!)}
+            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+              {millify(coins?.data.stats?.totalMarkets!)}
             </p>
-          </div>
-          <div className="flex flex-col flex-[0.5] dark:bg-slate-900/50 rounded-lg border border-slate-500/10 hover:border-slate-50/5 p-4">
+          </BorderedCard>
+          <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total 24th Volume</h1>
-            <p className="text-4xl mt-3.5 text-slate-50/70">
-              {millify(+data?.data.stats?.total24hVolume!)}
+            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+              {millify(+coins?.data.stats?.total24hVolume!)}
             </p>
-          </div>
+          </BorderedCard>
         </div>
-        <div id="coin-list" className="flex-[0.9]">
-          <div className="h-96 overflow-auto rounded-lg">
-            <div className="overflow-hidden dark:bg-slate-900/50 px-3 py-1.5">
-              {data?.data.coins.map((coin) => (
+        <div id="coin-list" className="flex-[0.6]">
+          <div className="h-96 overflow-auto rounded-lg scrollbar-hide dark:bg-slate-900/50">
+            <div className="overflow-hidden p-4 space-y-4">
+              {searchResults()?.map((coin) => (
                 <div
                   key={coin.uuid}
-                  className="flex space-x-5 items-center py-2"
+                  className="flex space-x-5 items-cente justify-center"
+                  onClick={() => handleSelectCoin(coin.uuid)}
                 >
                   <div className="w-7">
                     <img src={coin.iconUrl} alt={`coin__${coin.name}`} />
                   </div>
                   <NavLink
                     to={`#${coin.name}`}
-                    className="flex-[0.3] font-medium text-slate-50/70"
-                  >
-                    {coin.name}
-                  </NavLink>
-                  <div className="flex-[0.4]">
-                    <span className="text-slate-50/5">$</span>{" "}
+                    className="flex-[0.3] flex items-center font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800"
+                    dangerouslySetInnerHTML={{
+                      __html: manipulateInnerHTML(coin.name),
+                    }}
+                  />
+                  <div className="flex-[0.4] flex items-center text-slate-400/40">
+                    <span className="text-slate-50/10">$</span>&nbsp;
                     {(+coin.price).toFixed(2)}{" "}
                   </div>
                   <div
                     className={`rounded-full h-7 aspect-video flex items-center justify-center text-xs flex-[0.1] ${
                       +coin.change > 0
-                        ? "text-emerald-500 bg-emerald-800/20"
-                        : "text-rose-500 bg-rose-800/20"
+                        ? "text-emerald-500 bg-emerald-800/10"
+                        : "text-rose-500 bg-rose-800/10"
                     }`}
                   >
-                    {coin.change}
+                    {coin.change}%
                   </div>
-                  <div className="flex-[0.3]">Chart</div>
+                  <div className="flex-[0.3] text-slate-400/40">Chart</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        <div
-          id="coin-list"
-          className="flex-[0.5] dark:bg-slate-900/50 rounded-lg"
-        ></div>
+      </div>
+      <div className="flex space-x-4 h-full ">
+        <div className="flex-[0.4] scrollbar-hide dark:bg-slate-900/50 p-4 rounded-lg overflow-hidden">
+          <div className="flex items-start">
+            {isInitialLoading ? (
+              "loading..."
+            ) : (
+              <>
+                <div className="w-10 h-10 aspect-square">
+                  <img
+                    src={selectedCoin?.iconUrl}
+                    alt={`coin__${selectedCoin?.name}`}
+                  />
+                </div>
+                <div className="ml-4">
+                  <a
+                    href={selectedCoin?.websiteUrl!}
+                    target="_blank"
+                    className="text-lg flex justify-between font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800"
+                  >
+                    <span>
+                      {selectedCoin?.name}{" "}
+                      <b className="text-slate-50/90 font-light">
+                        {" "}
+                        | {selectedCoin?.symbol}
+                      </b>
+                    </span>
+                    <span
+                      className={`rounded-full h-7 aspect-video flex items-center justify-center text-xs flex-[0.1] ${
+                        +selectedCoin?.change! > 0
+                          ? "text-emerald-500"
+                          : "text-rose-500"
+                      }`}
+                    >
+                      {+selectedCoin?.change!}%
+                    </span>
+                  </a>
+                  <p className="text-slate-400/40 indent-0">
+                    {selectedCoin?.description}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="flex-[0.6] scrollbar-hide dark:bg-slate-900/50 rounded-lg overflow-hidden">
+          <div className="p-4"></div>
+        </div>
       </div>
     </div>
   );
