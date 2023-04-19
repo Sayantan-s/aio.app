@@ -7,9 +7,7 @@ import { NavLink } from "react-router-dom";
 
 const Instruments = () => {
   const [search, setSearch] = useState("");
-  const [selectedCoinId, setSelectedCoinId] = useState<string | undefined>(
-    undefined
-  );
+  const [selectedCoinId, setSelectedCoinId] = useState<string | undefined>();
   const [selectedCoin, setSelectedCoin] = useState<TCoin>();
   const { isInitialLoading, data: coins } = useGetCoins({
     refetchOnWindowFocus: false,
@@ -48,7 +46,7 @@ const Instruments = () => {
       ? str.replace(
           new RegExp(search, "gi"),
           (match) =>
-            `<mark class="text-pink-500 dark:text-pink-700 dark:bg-pink-700/25 text-md">${match}</mark>`
+            `<mark class="dark:from-pink-400 text-transparent dark:to-pink-600 bg-clip-text bg-gradient-to-br text-md">${match}</mark>`
         )
       : str;
 
@@ -119,7 +117,7 @@ const Instruments = () => {
                     {(+coin.price).toFixed(2)}{" "}
                   </div>
                   <div
-                    className={`rounded-full h-7 aspect-video flex items-center justify-center text-xs flex-[0.1] ${
+                    className={`rounded-full h-7 aspect-video flex items-center justify-center text-[10px] flex-[0.1] ${
                       +coin.change > 0
                         ? "text-emerald-500 bg-emerald-800/10"
                         : "text-rose-500 bg-rose-800/10"
