@@ -6,17 +6,28 @@ export interface ApiResponse<TData> {
 }
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_APP_API_URL,
+  baseURL: import.meta.env.VITE_APP_API_URL_COINS,
   headers: {
     "X-RapidAPI-Key": import.meta.env.VITE_APP_API_KEY,
-    "X-RapidAPI-Host": import.meta.env.VITE_APP_API_HOST,
   },
 });
 
-export const queryFn = async (params: string, queryParams?: object) => {
+export const coinApi = async (params: string, queryParams?: object) => {
   const res = await api.get(params, {
     method: "GET",
     params: queryParams,
   });
+  return res.data;
+};
+
+export const newsapi = axios.create({
+  baseURL: import.meta.env.VITE_APP_API_URL_NEWS,
+  headers: {
+    "X-RapidAPI-Key": import.meta.env.VITE_APP_API_KEY,
+  },
+});
+
+export const newsApi = async () => {
+  const res = await newsapi.get("");
   return res.data;
 };

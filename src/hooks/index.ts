@@ -1,4 +1,4 @@
-export * from "./useFetch";
 export * from "./useGetCoin";
 export * from "./useGetCoins";
+export * from "./useGetCryptoNews";
 export * from "./useInterval";

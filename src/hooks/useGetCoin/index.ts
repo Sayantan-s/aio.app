@@ -1,4 +1,4 @@
-import { queryFn } from "@api";
+import { coinApi } from "@api";
 import { QueryKey, UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { ICoinResponse } from "./coin.type";
 
@@ -11,7 +11,7 @@ export const useGetCoin = (
 ) =>
   useQuery<ICoinResponse>({
     queryKey: ["coin", id],
-    queryFn: () => queryFn(`/coin/${id}`),
+    queryFn: () => coinApi(`/coin/${id}`),
     enabled: !!id,
     ...(options || {}),
   });
