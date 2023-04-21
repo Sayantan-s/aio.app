@@ -1,7 +1,7 @@
 import { Close, SearchIcon } from "@components/icons";
 import { motion } from "framer-motion";
 import { memo } from "react";
-import BorderedCard from "./BorderedCard";
+import BorderedCard from "../BorderedCard";
 
 interface Props {
   onSearch: React.ChangeEventHandler<HTMLInputElement>;

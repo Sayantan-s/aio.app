@@ -17,12 +17,3 @@ export const classNames = (...args: unknown[]) => {
   });
   return result.join(" ");
 };
-
-// const options = {
-//   method: "GET",
-//   url: "https://latest-stock-price.p.rapidapi.com/any",
-//   headers: {
-//     "X-RapidAPI-Key": "074279b31dmsh7d46ca1f3bf2ce4p13b41fjsn48982e042425",
-//     "X-RapidAPI-Host": "latest-stock-price.p.rapidapi.com",
-//   },
-// };

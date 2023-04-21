@@ -1,29 +1,23 @@
 import { BorderedCard, HeaderPanel, Search } from "@components/organisms";
-import { useGetCoin, useGetCoins } from "@hooks";
-import { TCoin } from "@hooks/useGetCoin/coin.type";
+import { CoinDetails } from "@components/views/CoinDetails";
+import { useGetCoins } from "@hooks";
 import millify from "millify";
 import { useCallback, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const Instruments = () => {
   const [search, setSearch] = useState("");
-  const [selectedCoinId, setSelectedCoinId] = useState<string | undefined>();
-  const [selectedCoin, setSelectedCoin] = useState<TCoin>();
+  const [selectedCoinId, setSelectedCoinId] = useState<string>(
+    window.location.hash?.slice(1) || ""
+  );
   const { isInitialLoading, data: coins } = useGetCoins({
     refetchOnWindowFocus: false,
     onSuccess: (coins) => {
-      setSelectedCoinId(coins.data.coins[0].uuid);
+      !selectedCoinId ||
+        (selectedCoinId.trim() === "" &&
+          setSelectedCoinId(coins.data.coins[0].uuid));
     },
   });
-  const { isInitialLoading: isFetchingInitially, data: coin } = useGetCoin(
-    selectedCoinId as string,
-    {
-      refetchOnWindowFocus: false,
-      onSuccess: (data) => {
-        setSelectedCoin(data.data.coin);
-      },
-    }
-  );
 
   const handleSearch: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (eve) => {
@@ -106,7 +100,7 @@ const Instruments = () => {
                     <img src={coin.iconUrl} alt={`coin__${coin.name}`} />
                   </div>
                   <NavLink
-                    to={`#${coin.name}`}
+                    to={`#${coin.uuid}`}
                     className="flex-[0.3] flex items-center font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800"
                     dangerouslySetInnerHTML={{
                       __html: manipulateInnerHTML(coin.name),
@@ -133,49 +127,7 @@ const Instruments = () => {
         </div>
       </div>
       <div className="flex space-x-4 h-full ">
-        <div className="flex-[0.4] scrollbar-hide dark:bg-slate-900/50 p-4 rounded-lg overflow-hidden">
-          <div className="flex items-start">
-            {isInitialLoading ? (
-              "loading..."
-            ) : (
-              <>
-                <div className="w-10 h-10 aspect-square">
-                  <img
-                    src={selectedCoin?.iconUrl}
-                    alt={`coin__${selectedCoin?.name}`}
-                  />
-                </div>
-                <div className="ml-4">
-                  <a
-                    href={selectedCoin?.websiteUrl!}
-                    target="_blank"
-                    className="text-lg flex justify-between font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800"
-                  >
-                    <span>
-                      {selectedCoin?.name}{" "}
-                      <b className="text-slate-50/90 font-light">
-                        {" "}
-                        | {selectedCoin?.symbol}
-                      </b>
-                    </span>
-                    <span
-                      className={`rounded-full h-7 aspect-video flex items-center justify-center text-xs flex-[0.1] ${
-                        +selectedCoin?.change! > 0
-                          ? "text-emerald-500"
-                          : "text-rose-500"
-                      }`}
-                    >
-                      {+selectedCoin?.change!}%
-                    </span>
-                  </a>
-                  <p className="text-slate-400/40 indent-0">
-                    {selectedCoin?.description}
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        <CoinDetails coinId={selectedCoinId} />
         <div className="flex-[0.6] scrollbar-hide dark:bg-slate-900/50 rounded-lg overflow-hidden">
           <div className="p-4"></div>
         </div>

@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start": "yarn build && yarn preview",
-    "start:scratch": "yarn && yarn start"
+    "start:scratch": "yarn && yarn start",
+    "test": "vitest --watch"
   },
   "dependencies": {
     "@lottiefiles/react-lottie-player": "^3.4.9",
@@ -30,6 +31,7 @@
     "@vitejs/plugin-react": "^2.2.0",
     "autoprefixer": "^10.4.13",
     "jsdom": "^21.1.1",
+    "msw": "^1.2.1",
     "postcss": "^8.4.19",
     "stepzen": "^0.29.0",
     "tailwindcss": "^3.2.4",
