@@ -1,6 +1,9 @@
 import { ApiResponse } from "@api";
 
-export interface ICoin {
+export interface ClientSideCoinType {
+  checked: boolean;
+}
+export interface ICoin extends ClientSideCoinType {
   "24hVolume": string;
   btcPrice: string;
   change: string;

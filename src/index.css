@@ -9,6 +9,11 @@
   body {
     @apply text-slate-500/80 text-sm bg-blue-50 max-lg:text-xs overflow-hidden box-border;
   }
+
+  .news::nth-child(3) {
+    @apply bg-red-200;
+  }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }

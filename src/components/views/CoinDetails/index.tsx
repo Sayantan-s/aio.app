@@ -11,7 +11,7 @@ const Component: FC<Props> = ({ coinId }) => {
   });
   const coin = data?.data.coin;
   return (
-    <div className="basis-5/12 scrollbar-hide dark:bg-slate-900/50 p-4 rounded-lg overflow-hidden">
+    <div className="basis-4/12 scrollbar-hide dark:bg-slate-900/50 p-4 rounded-lg overflow-hidden">
       {isInitialLoading ? (
         "loading..."
       ) : (

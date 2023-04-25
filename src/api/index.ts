@@ -31,3 +31,17 @@ export const newsApi = async () => {
   const res = await newsapi.get("");
   return res.data;
 };
+
+export const nftsapi = axios.create({
+  baseURL: import.meta.env.VITE_APP_API_URL_NFTS,
+  headers: {
+    "X-RapidAPI-Key": import.meta.env.VITE_APP_API_KEY,
+  },
+});
+
+export const nftsApi = async () => {
+  const res = await nftsapi.get("/assets", {
+    params: { order_direction: "desc", limit: 20, include_orders: "false" },
+  });
+  return res.data;
+};

@@ -1,32 +1,45 @@
-import { useGetCryptoNews } from "@hooks";
-import { memo } from "react";
+import { memo, useState } from "react";
 
 export const Component = () => {
-  const { isInitialLoading, data } = useGetCryptoNews({
-    refetchOnWindowFocus: false,
-  });
+  // const { isInitialLoading, data } = useGetCryptoNews({
+  //   refetchOnWindowFocus: false,
+  // });
+
+  const [transformUI, setTransformUI] = useState(false);
+
+  const onHandleScroll: React.UIEventHandler<HTMLDivElement> = (eve) => {
+    const target = eve.target as HTMLDivElement;
+    setTransformUI(target.scrollTop > 0);
+  };
 
   return (
-    <div className="dark:bg-slate-900/50 p-4 rounded-lg flex-1">
-      <h1 className="font-medium flex space-x-2 text-xl text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
-        <span>Top 10</span>
-        <div className="text-emerald-500 text-xs flex items-center space-x-1 bg-emerald-500/10 aspect-video px-2 rounded-full">
-          <div className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-full w-full bg-green-500"></span>
-          </div>{" "}
-          <span>Live</span>
-        </div>
-      </h1>
-      {isInitialLoading ? <div>loading...</div> : null}
-      <div role="list" className="mt-4 overflow-y-auto scrollbar-hide h-full">
-        <div className="overflow-hidden space-y-4 flex flex-col">
-          {data?.map((news, index) => (
-            <a role="listitem" href={news.url} key={news.title + index}>
-              <h1 className="">{news.title}</h1>
-              <p className="text-slate-400/20 mt-2">{news.description}</p>
-            </a>
-          ))}
+    <div className="dark:bg-slate-900/50 rounded-lg flex-1 overflow-hidden flex flex-col">
+      <div className="relative flex flex-col h-full">
+        <div className="flex-1 absolute top-0 left-0 right-0 bottom-0 overflow-hidden flex flex-col">
+          <div
+            className="flex flex-col space-y-3 overflow-y-auto scrollbar-hide news"
+            role="list"
+            onScroll={onHandleScroll}
+          >
+            <header className="sticky top-0 dark:bg-slate-900 px-4 w-full">
+              <div className="w-max py-2.5 will-change-auto">
+                <h1 className="font-medium flex items-center space-x-2 text-base text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+                  <span>Trending 10</span>
+                  <div className="text-emerald-500 flex items-center space-x-1 bg-emerald-500/10 aspect-video px-2 rounded-full">
+                    <div className="relative flex h-1 w-1">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-full w-full bg-green-500"></span>
+                    </div>{" "}
+                    <span className="text-[10px]">Live</span>
+                  </div>
+                </h1>
+              </div>
+            </header>
+            {/* {isInitialLoading ? <div>loading...</div> : null}
+            {data?.map((news, index) => (
+              <News key={news.title + index} {...news} />
+            ))} */}
+          </div>
         </div>
       </div>
     </div>

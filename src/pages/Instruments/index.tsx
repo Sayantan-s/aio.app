@@ -2,6 +2,7 @@ import { BorderedCard, HeaderPanel, Search } from "@components/organisms";
 import { CoinDetails } from "@components/views/CoinDetails";
 import { CoinList } from "@components/views/CoinList";
 import { CryptoNews } from "@components/views/CryptoNews";
+import { NFTList } from "@components/views/NFTList";
 import { useGetCoins } from "@hooks";
 import millify from "millify";
 import { useCallback, useState } from "react";
@@ -17,6 +18,13 @@ const Instruments = () => {
       (!selectedCoinId || selectedCoinId.trim() === "") &&
         setSelectedCoinId(coins.data.coins[0].uuid);
     },
+    select: (payload) => ({
+      ...payload,
+      data: {
+        ...payload.data,
+        coins: payload.data.coins.map((coin) => ({ ...coin, checked: false })),
+      },
+    }),
   });
 
   const handleSearch: React.ChangeEventHandler<HTMLInputElement> = useCallback(
@@ -55,9 +63,9 @@ const Instruments = () => {
         />
       </HeaderPanel>
       <div className="flex space-x-4">
-        <div className="basis-5/12 grid grid-cols-2 gap-4 p-4 dark:bg-slate-900/50 rounded-lg aspect-video">
+        <div className="basis-4/12 grid grid-cols-2 gap-4 p-4 dark:bg-slate-900/50 rounded-lg">
           <BorderedCard className="p-4">
-            <h1 className="text-slate-400/40">Total Cryptocurrencies</h1>
+            <h1 className="text-slate-400/40">Cryptocurrencies</h1>
             <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
               {coins?.data.stats?.totalCoins!}
             </p>{" "}
@@ -87,16 +95,21 @@ const Instruments = () => {
             </p>
           </BorderedCard>
         </div>
-        <CoinList
-          coins={searchResults()}
-          onCoinSelect={(id) => handleSelectCoin(id)}
-          searchedCoin={search}
-        />
+        <div className="basis-8/12 flex space-x-4">
+          <CoinList
+            coins={searchResults()}
+            onCoinSelect={(id) => handleSelectCoin(id)}
+            searchedCoin={search}
+          />
+          <div className="basis-5/12 p-4 dark:bg-slate-900/50 h-96 overflow-auto scrollbar-hide rounded-lg">
+            Identity
+          </div>
+        </div>
       </div>
       <div className="flex space-x-4 h-full ">
         <CoinDetails coinId={selectedCoinId} />
-        <div className="basis-7/12 flex space-x-4">
-          <div className="scrollbar-hide dark:bg-slate-900/50 p-4 rounded-lg overflow-hidden flex-1"></div>
+        <div className="basis-8/12 flex space-x-4">
+          <NFTList />
           <CryptoNews />
         </div>
       </div>
