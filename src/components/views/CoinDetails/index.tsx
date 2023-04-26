@@ -1,5 +1,6 @@
 import { useGetCoin } from "@hooks";
 import { FC, memo } from "react";
+import { Fallback } from "./Fallback";
 
 interface Props {
   coinId: string;
@@ -13,7 +14,7 @@ const Component: FC<Props> = ({ coinId }) => {
   return (
     <div className="basis-4/12 scrollbar-hide dark:bg-slate-900/50 p-4 rounded-lg overflow-hidden">
       {isInitialLoading ? (
-        "loading..."
+        <Fallback />
       ) : (
         <div>
           <div className="flex items-start">

@@ -1,17 +1,18 @@
 import { List } from "@components/organisms";
 import { useGetNfts } from "@hooks";
+import { Fallback } from "./Fallback";
 import { NFTDetails } from "./NFTDetails";
 
 export const NFTList = () => {
   const { data, isInitialLoading } = useGetNfts({
     refetchOnWindowFocus: false,
-    enabled: true,
   });
 
   return (
     <List
       data={data?.assets!}
       isLoading={isInitialLoading}
+      renderFallback={() => <Fallback />}
       itemSpacing="3"
       renderHeader={() => (
         <div className="py-2.5 will-change-auto dark:bg-slate-900 px-4 w-full">

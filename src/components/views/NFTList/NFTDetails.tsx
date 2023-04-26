@@ -7,11 +7,7 @@ interface Props {
 
 export const NFTDetails: FC<Props> = ({ nft }) => {
   return (
-    <div
-      key={nft.id}
-      className="flex space-x-3 px-4 items-center"
-      role="listitem"
-    >
+    <div className="flex space-x-3 px-4 items-center" role="listitem">
       <div>
         <div className="w-20 h-20 relative rounded-lg overflow-hidden">
           <img

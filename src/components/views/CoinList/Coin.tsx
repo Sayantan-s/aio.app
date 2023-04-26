@@ -5,9 +5,10 @@ import { NavLink } from "react-router-dom";
 
 interface Props extends ICoin {
   onCoinSelect: () => void;
+  onCoinCheck: () => void;
 }
 
-export const Coin: FC<Props> = ({ onCoinSelect, ...coin }) => {
+export const Coin: FC<Props> = ({ onCoinSelect, onCoinCheck, ...coin }) => {
   return (
     <div
       key={coin.uuid}
@@ -38,7 +39,7 @@ export const Coin: FC<Props> = ({ onCoinSelect, ...coin }) => {
         {coin.change}%
       </div>
       <div className="flex-[0.1] text-slate-400/40 flex items-center justify-center">
-        <Checkbox checked={coin.checked} onCheck={() => {}} />
+        <Checkbox checked={coin.checked} onCheck={onCoinCheck} />
       </div>
     </div>
   );

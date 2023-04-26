@@ -20,7 +20,7 @@ export const Checkbox: FC<Props> = ({ checked, onCheck, ...rest }) => {
 
   const checkedStyles = checked
     ? "bg-green-600 border-transparent"
-    : "bg-slate-600/5 border-slate-100/5";
+    : "bg-slate-600/5 border-slate-100/5 hover:bg-slate-600/10 hover:border-slate-100/10";
 
   return (
     <div

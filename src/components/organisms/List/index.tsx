@@ -2,10 +2,11 @@ import { useMemo, useState } from "react";
 
 interface Props<TData> {
   data: TData[];
-  children: (item: TData) => JSX.Element | JSX.Element[] | null;
-  renderHeader?: () => JSX.Element | JSX.Element[];
+  children: (item: TData, index: number) => JSX.Element | JSX.Element[] | null;
+  renderHeader?: (hasScrolledFromTop: boolean) => JSX.Element | JSX.Element[];
   itemSpacing?: "1" | "2" | "3" | "4";
   isLoading?: boolean;
+  renderFallback?: () => JSX.Element | JSX.Element[];
   error?: string | undefined;
   className?: string;
 }
@@ -16,12 +17,18 @@ export const List = <TData,>({
   renderHeader,
   itemSpacing,
   className,
+  renderFallback,
+  isLoading,
 }: Props<TData>) => {
-  const [transformUI, setTransformUI] = useState(false);
+  const [hasScrolledFromTop, setHasScrolledFromTop] = useState(false);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
 
   const onHandleScroll: React.UIEventHandler<HTMLDivElement> = (eve) => {
     const target = eve.target as HTMLDivElement;
-    setTransformUI(target.scrollTop > 0);
+    setHasScrolledFromTop(target.scrollTop > 0);
+    setHasScrolledToBottom(
+      target.scrollHeight - (target.scrollTop + target.clientHeight) < 5
+    );
   };
 
   const listSpacing = useMemo(() => {
@@ -54,17 +61,21 @@ export const List = <TData,>({
           >
             {renderHeader ? (
               <header className="sticky top-0 w-full z-20">
-                {renderHeader()}
+                {renderHeader(hasScrolledFromTop)}
               </header>
             ) : null}
             <div
               role="list"
               {...(listSpacing ? { className: listSpacing } : {})}
             >
-              {data?.map((list) => children(list))}
+              {isLoading
+                ? renderFallback?.()
+                : data?.map((list, index) => children(list, index))}
             </div>
           </div>
-          <div className="h-10 w-full bg-gradient-to-b from-slate-900/0 via-slate-900/50 to-slate-900 absolute bottom-0 z-50" />
+          {!hasScrolledToBottom ? (
+            <div className="h-10 w-full bg-gradient-to-b from-slate-900/0 via-slate-900/50 to-slate-900 absolute bottom-0 z-50"></div>
+          ) : null}{" "}
         </div>
       </div>
     </div>
