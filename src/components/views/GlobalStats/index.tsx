@@ -22,31 +22,31 @@ export const GlobalStats: FC<Props> = ({
         <Fragment>
           <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Cryptocurrencies</h1>
-            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+            <p className="text-4xl w-max mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
               {totalCoins}
             </p>{" "}
           </BorderedCard>
           <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total Exchanges</h1>
-            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+            <p className="text-4xl w-max mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
               {millify(totalExchanges)}
             </p>
           </BorderedCard>
           <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total MarketCap</h1>
-            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+            <p className="text-4xl w-max mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
               {millify(+totalMarketCap)}
             </p>
           </BorderedCard>
           <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total Markets</h1>
-            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+            <p className="text-4xl w-max mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
               {millify(totalMarkets)}
             </p>
           </BorderedCard>
           <BorderedCard className="p-4">
             <h1 className="text-slate-400/40">Total 24th Volume</h1>
-            <p className="text-4xl mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
+            <p className="text-4xl w-max mt-2.5 text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
               {millify(+total24hVolume)}
             </p>
           </BorderedCard>

@@ -60,7 +60,7 @@ export const List = <TData,>({
             onScroll={onHandleScroll}
           >
             {renderHeader ? (
-              <header className="sticky top-0 w-full z-20">
+              <header className={`sticky top-0 w-full z-20 shadow-xl`}>
                 {renderHeader(hasScrolledFromTop)}
               </header>
             ) : null}

@@ -21,7 +21,7 @@ export const NFTDetails: FC<Props> = ({ nft }) => {
         <h1 className="items-center font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800">
           {nft.name || "No Name"}
         </h1>
-        <p className="line-clamp-2">{nft.description}</p>
+        <p className="line-clamp-2 text-xs">{nft.description}</p>
       </div>
     </div>
   );
