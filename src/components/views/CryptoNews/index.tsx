@@ -1,18 +1,11 @@
 import { List } from "@components/organisms";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { News } from "./News";
 
 export const Component = () => {
   // const { isInitialLoading, data } = useGetCryptoNews({
   //   refetchOnWindowFocus: false,
   // });
-
-  const [transformUI, setTransformUI] = useState(false);
-
-  const onHandleScroll: React.UIEventHandler<HTMLDivElement> = (eve) => {
-    const target = eve.target as HTMLDivElement;
-    setTransformUI(target.scrollTop > 0);
-  };
 
   return (
     <List

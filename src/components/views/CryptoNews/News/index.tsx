@@ -1,7 +1,6 @@
-import { INews } from "@hooks/useGetCryptoNews/news.types";
 import { FC } from "react";
 
-export const News: FC<INews> = ({ url, title, description }) => {
+export const News: FC<any> = ({ url, title, description }) => {
   return (
     <a role="listitem" href={url} target="_blank" className="px-4 news">
       <h1 className="line-clamp-2">{title}</h1>

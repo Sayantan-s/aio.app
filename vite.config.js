@@ -1,10 +1,16 @@
 import react from "@vitejs/plugin-react";
 import path from "path";
+import checker from "vite-plugin-checker";
 import { defineConfig } from "vitest/config";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    checker({
+      typescript: true,
+    }),
+  ],
   resolve: {
     alias: [
       { find: "@pages", replacement: path.resolve(__dirname, "src/pages") },
@@ -29,11 +35,11 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
-    minify: "esbuild",
   },
   test: {
     globals: true,
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
   },
+  clearScreen: true,
 });
