@@ -1,10 +1,13 @@
+import { Result } from "@hooks/useGetCryptoNews/news.types";
 import { FC } from "react";
 
-export const News: FC<any> = ({ url, title, description }) => {
+export const News: FC<Result> = ({ url, name, description }) => {
   return (
-    <a role="listitem" href={url} target="_blank" className="px-4 news">
-      <h1 className="line-clamp-2">{title}</h1>
+    <div className="px-4" role="listitem">
+      <a className="line-clamp-2 hover:underline" href={url} target="_blank">
+        {name}
+      </a>
       <p className="text-slate-400/30 mt-1 line-clamp-3">{description}</p>
-    </a>
+    </div>
   );
 };

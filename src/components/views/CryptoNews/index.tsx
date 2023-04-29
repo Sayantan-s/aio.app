@@ -1,15 +1,21 @@
 import { List } from "@components/organisms";
+import { useGetCryptoNews } from "@hooks";
 import { memo } from "react";
+import { Fallback } from "./Fallback";
 import { News } from "./News";
 
 export const Component = () => {
-  // const { isInitialLoading, data } = useGetCryptoNews({
-  //   refetchOnWindowFocus: false,
-  // });
+  const { isInitialLoading, data } = useGetCryptoNews({
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
   return (
     <List
-      data={[]}
+      itemSpacing="4"
+      data={data?.value!}
+      renderFallback={() => <Fallback />}
+      isLoading={isInitialLoading}
       renderHeader={() => (
         <div
           className={`py-2.5 will-change-auto dark:bg-slate-900 px-4 w-full`}
@@ -29,7 +35,7 @@ export const Component = () => {
         </div>
       )}
     >
-      {(news) => <News />}
+      {(news, index) => <News {...news} key={index} />}
     </List>
   );
 };

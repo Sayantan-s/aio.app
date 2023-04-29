@@ -24,6 +24,15 @@ export const newsapi = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL_NEWS,
   headers: {
     "X-RapidAPI-Key": import.meta.env.VITE_APP_API_KEY,
+    "X-BingApis-SDK": "true",
+    "content-type": "application/octet-stream",
+  },
+  params: {
+    q: "Cryptocurrency",
+    freshness: "Day",
+    textFormat: "Raw",
+    safeSearch: "Off",
+    count: 10,
   },
 });
 
