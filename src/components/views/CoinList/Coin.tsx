@@ -20,7 +20,7 @@ export const Coin: FC<Props> = ({ onCoinSelect, onCoinCheck, ...coin }) => {
       </div>
       <NavLink
         to={`#${coin.uuid}`}
-        className="flex-[0.45] flex items-center font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800"
+        className="flex-[0.45] flex items-center w-max font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800"
         dangerouslySetInnerHTML={{
           __html: coin.name,
         }}

@@ -1,3 +1,4 @@
+import { GradientText } from "@components/atoms";
 import { useGetCoin } from "@hooks";
 import { FC, memo } from "react";
 import { Fallback } from "./Fallback";
@@ -28,7 +29,9 @@ const Component: FC<Props> = ({ coinId }) => {
                 className="text-lg flex justify-between font-medium text-transparent bg-clip-text bg-gradient-to-br from-10% from-slate-50/80 via-30% via-slate-100/50 to-60% to-slate-800"
               >
                 <span>
-                  {coin?.name}{" "}
+                  <GradientText as="span" className="font-medium text-lg">
+                    {coin?.name}
+                  </GradientText>
                   <b className="text-slate-50/90 font-light">
                     {" "}
                     | {coin?.symbol}
