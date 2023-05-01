@@ -1,35 +1,29 @@
-import { HeaderPanel, Search } from "@components/organisms";
-import { CoinDetails } from "@components/views/CoinDetails";
-import { CoinList } from "@components/views/CoinList";
-import { CryptoNews } from "@components/views/CryptoNews";
-import { GlobalStats } from "@components/views/GlobalStats";
-import { NFTList } from "@components/views/NFTList";
-import { UserIdentity } from "@components/views/UserIdentity";
-import { useGetCoins } from "@hooks";
-import { ICoin } from "@hooks/useGetCoins/coin.types";
-import { useCallback, useState } from "react";
+import { HeaderPanel, Search } from '@components/organisms';
+import { CoinDetails } from '@components/views/home/CoinDetails';
+import { CryptoNews } from '@components/views/home/CryptoNews';
+import { CoinList } from '@components/views/home/CryptoNews/News/CoinList';
+import { GlobalStats } from '@components/views/home/GlobalStats';
+import { NFTList } from '@components/views/home/NFTList';
+import { UserIdentity } from '@components/views/home/UserIdentity';
+import { useGetCoins } from '@hooks';
+import type { ICoin } from '@hooks/useGetCoins/coin.types';
+import React, { useCallback, useState } from 'react';
 
 const Instruments = () => {
-  const [search, setSearch] = useState("");
-  const [selectedCoinId, setSelectedCoinId] = useState<string>(
-    window.location.hash?.slice(1) || ""
-  );
+  const [search, setSearch] = useState('');
+  const [selectedCoinId, setSelectedCoinId] = useState<string>(window.location.hash?.slice(1) || '');
   const [coins, setCoins] = useState<ICoin[]>([]);
   const { isInitialLoading, data } = useGetCoins({
     refetchOnWindowFocus: false,
     onSuccess: ({ data }) => {
       setCoins(data.coins.map((coin) => ({ ...coin, checked: false })));
-      if (!selectedCoinId || selectedCoinId.trim() === "")
-        setSelectedCoinId(data.coins[0].uuid);
+      if (!selectedCoinId || selectedCoinId.trim() === '') setSelectedCoinId(data.coins[0].uuid);
     },
   });
 
-  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    (eve) => {
-      setSearch(eve.target.value);
-    },
-    []
-  );
+  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = useCallback((eve) => {
+    setSearch(eve.target.value);
+  }, []);
 
   const handleSelectCoin = (id: string) => setSelectedCoinId(id);
   const handleCheckCoin = (id: string) => {
@@ -37,15 +31,13 @@ const Instruments = () => {
       prevState.map((coinData) => ({
         ...coinData,
         checked: coinData.uuid === id ? !coinData.checked : coinData.checked,
-      }))
+      })),
     );
   };
 
-  const handleSearchClear = useCallback(() => setSearch(""), []);
+  const handleSearchClear = useCallback(() => setSearch(''), []);
   const searchResults = () => {
-    const filteredSearch = coins.filter((coin) =>
-      coin.name.toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredSearch = coins.filter((coin) => coin.name.toLowerCase().includes(search.toLowerCase()));
     return filteredSearch;
   };
 
@@ -56,11 +48,11 @@ const Instruments = () => {
           value={search}
           onSearch={handleSearch}
           onSearchClear={handleSearchClear}
-          placeholder={"Bitcon or BTC.."}
+          placeholder={'Bitcon or BTC..'}
         />
       </HeaderPanel>
       <div className="flex space-x-4">
-        <GlobalStats isLoading={isInitialLoading} {...data?.data.stats!} />
+        {<GlobalStats isLoading={isInitialLoading} {...data?.data.stats} />}
         <div className="basis-8/12 flex space-x-4">
           <CoinList
             coins={searchResults()}

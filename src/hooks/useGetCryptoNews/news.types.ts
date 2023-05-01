@@ -1,15 +1,15 @@
 export interface INewsResponse {
-  value: Result[];
+    value: Result[];
 }
 
 export interface Result {
-  datePublished: string;
-  description: string;
-  name: string;
-  url: string;
-  image: {
-    thumbnail: {
-      contentUrl: string;
+    datePublished: string;
+    description: string;
+    name: string;
+    url: string;
+    image: {
+        thumbnail: {
+            contentUrl: string;
+        };
     };
-  };
 }

@@ -9,13 +9,13 @@ import "./index.css";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <ThemeContext>
-          <App />
-        </ThemeContext>
-      </QueryClientProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+    <React.StrictMode>
+        <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+                <ThemeContext>
+                    <App />
+                </ThemeContext>
+            </QueryClientProvider>
+        </BrowserRouter>
+    </React.StrictMode>
 );

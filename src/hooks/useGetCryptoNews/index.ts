@@ -1,15 +1,16 @@
 import { newsApi } from "@api";
-import { QueryKey, UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { INewsResponse } from "./news.types";
+import type { QueryKey, UseQueryOptions} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { INewsResponse } from "./news.types";
 
 export const useGetCryptoNews = (
-  options?: Omit<
+    options?: Omit<
     UseQueryOptions<INewsResponse, unknown, INewsResponse, QueryKey>,
     "initialData"
-  >
+    >
 ) =>
-  useQuery<INewsResponse>({
-    queryKey: ["news"],
-    queryFn: () => newsApi(),
-    ...(options || {}),
-  });
+    useQuery<INewsResponse>({
+        queryKey: ["news"],
+        queryFn: () => newsApi(),
+        ...(options || {}),
+    });

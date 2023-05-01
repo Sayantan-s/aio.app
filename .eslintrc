@@ -1,0 +1,32 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:import/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "eslint-config-prettier",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {},
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "globals": {
+    "React": "readonly",
+    "__dirname": true
+  },
+  "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
+    "no-console": "error"
+  }
+}

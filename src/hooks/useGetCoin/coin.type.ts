@@ -1,9 +1,9 @@
-import { ApiResponse } from "@api";
-import { ICoin } from "@hooks/useGetCoins/coin.types";
+import type { ApiResponse } from "@api";
+import type { ICoin } from "@hooks/useGetCoins/coin.types";
 
 export interface TCoin extends ICoin {
-  websiteUrl: string;
-  description: string;
+    websiteUrl: string;
+    description: string;
 }
 
 export type ICoinResponse = ApiResponse<{ coin: TCoin }>;

@@ -8,12 +8,12 @@ import Loader from "./Loader";
 import SortButtons from "./SortButtons";
 
 export {
-  Search,
-  SortButtons,
-  DarkModeToggler,
-  HeaderPanel,
-  Loader,
-  Error,
-  BorderedCard,
-  List,
+    Search,
+    SortButtons,
+    DarkModeToggler,
+    HeaderPanel,
+    Loader,
+    Error,
+    BorderedCard,
+    List,
 };
