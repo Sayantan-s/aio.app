@@ -3,7 +3,6 @@ import path from 'path';
 import checker from 'vite-plugin-checker';
 import { defineConfig } from 'vitest/config';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
