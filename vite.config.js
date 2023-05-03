@@ -1,4 +1,4 @@
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import checker from 'vite-plugin-checker';
 import { defineConfig } from 'vitest/config';
@@ -9,7 +9,6 @@ export default defineConfig({
     react(),
     checker({
       typescript: true,
-      eslint: true,
     }),
   ],
   resolve: {
@@ -42,5 +41,4 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
   },
-  clearScreen: true,
 });

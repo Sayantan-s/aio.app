@@ -16,7 +16,9 @@
     "start:scratch": "yarn && yarn start",
     "test": "vitest --watch",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "format": "prettier .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.29.3",
@@ -37,6 +39,8 @@
     "react-router-dom": "^6.4.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.6.1",
+    "@commitlint/config-conventional": "^17.6.1",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
@@ -44,9 +48,12 @@
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
+    "@vitejs/plugin-react-swc": "^3.3.0",
     "autoprefixer": "^10.4.13",
     "eslint-import-resolver-typescript": "^3.5.5",
+    "husky": "^8.0.0",
     "jsdom": "^21.1.1",
+    "lint-staged": "^13.2.2",
     "msw": "^1.2.1",
     "postcss": "^8.4.19",
     "stepzen": "^0.29.0",
