@@ -12,13 +12,11 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "yarn build && yarn preview",
-    "start:scratch": "yarn && yarn start",
     "test": "vitest --watch",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier .",
-    "prepare": "husky install"
+    "prepare": "is-ci || husky install"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.29.3",
@@ -52,6 +50,7 @@
     "autoprefixer": "^10.4.13",
     "eslint-import-resolver-typescript": "^3.5.5",
     "husky": "^8.0.0",
+    "is-ci": "^3.0.1",
     "jsdom": "^21.1.1",
     "lint-staged": "^13.2.2",
     "msw": "^1.2.1",
