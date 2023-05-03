@@ -32,14 +32,10 @@
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-empty-function": "warn"
   },
-  "overrides": [
-    {
-      "files": ["*.ts", "*.tsx"],
-      "parserOptions": { "project": "**/tsconfig.json" }
-    }
-  ],
   "parserOptions": {
-    "parser": "@typescript-eslint/parser"
+    "parser": "@typescript-eslint/parser",
+    "files": ["*.ts", "*.tsx"],
+    "parserOptions": { "project": "**/tsconfig.json" }
   },
   "env": {
     "browser": true,
