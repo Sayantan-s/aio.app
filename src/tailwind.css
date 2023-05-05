@@ -10,10 +10,6 @@
     @apply box-border select-none overflow-hidden bg-blue-50 text-sm text-slate-500/80 max-lg:text-xs;
   }
 
-  .news::nth-child(3) {
-    @apply bg-red-200;
-  }
-
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }

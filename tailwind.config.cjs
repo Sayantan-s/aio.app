@@ -1,12 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "class",
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: 'class',
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     fontFamily: {
-      sans: ["DM Sans"],
+      sans: ['DM Sans'],
     },
     extend: {},
   },
-  plugins: [require("@tailwindcss/line-clamp")],
+  plugins: [require('@tailwindcss/line-clamp')],
 };
