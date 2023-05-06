@@ -8,7 +8,7 @@ export const withLayout = <TProps extends object>(WrappedComponent: ComponentTyp
       className="relative h-screen w-full overflow-hidden bg-white p-10 dark:bg-slate-900"
       style={{ backgroundImage: gradient }}
     >
-      <div className="mx-auto h-full max-w-6xl overflow-hidden rounded-xl bg-white p-4 backdrop-blur-3xl dark:bg-slate-900/50">
+      <div className="mx-auto h-full max-w-7xl overflow-hidden rounded-xl bg-white p-4 backdrop-blur-3xl dark:bg-slate-900/50">
         <WrappedComponent {...props} />
       </div>
     </main>

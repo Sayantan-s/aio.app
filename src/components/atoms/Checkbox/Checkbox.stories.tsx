@@ -8,6 +8,7 @@ const meta = {
 } satisfies Meta<typeof Checkbox>;
 
 export default meta;
+
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { checked: true } };

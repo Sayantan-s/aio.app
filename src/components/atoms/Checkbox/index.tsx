@@ -8,7 +8,6 @@ interface Props
       'onClick'
     >,
     VariantProps<typeof styles> {
-  checked: boolean;
   onCheck: MouseEventHandler<HTMLDivElement>;
 }
 
@@ -43,7 +42,7 @@ export const Checkbox: FC<Props> = ({ checked, onCheck, ...rest }) => {
       onClick={handleClick}
       role="checkbox"
       tabIndex={0}
-      aria-checked={checked}
+      aria-checked={checked as boolean}
     >
       {checked ? (
         <svg
