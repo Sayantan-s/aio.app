@@ -1,25 +1,40 @@
-import type { CSSProperties } from 'react';
+import type { VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
+import { Fragment, type FC, type PropsWithChildren } from 'react';
 
-const styles = {
-  '--dark-purple': '4 6 22',
-  '--light-purple': '120 119 198',
-  '--bg-color': 'linear-gradient(rgb(var(--dark-purple)), rgb(var(--dark-purple)))',
-  '--border-color': `linear-gradient(145deg,
-            rgb(var(--light-purple)) 0%,
-            rgb(var(--light-purple) / 0.3) 33.33%,
-            rgb(var(--light-purple) / 0.14) 66.67%,
-            rgb(var(--light-purple) / 0.1) 100%)
-          `,
-};
+interface Props extends PropsWithChildren, VariantProps<typeof stylesParent> {
+  hoverGradient?: boolean;
+  className?: string;
+}
 
-export const Card = () => {
+const stylesParent = cva(`rounded-lg overflow-hidden`, {
+  variants: {
+    bordered: {
+      true: 'from-10% via-40% to-50% bg-gradient-to-br via-slate-900/10 p-[1.5px] dark:from-slate-800/30 dark:to-slate-900/5',
+      false: 'flex flex-1 flex-col dark:bg-slate-900/50',
+    },
+    fullWidth: { true: 'w-full' },
+  },
+  defaultVariants: { bordered: false },
+});
+
+const stylesChild = cva('rounded-lg overflow-hidden', {
+  variants: {
+    bordered: {
+      true: 'flex flex-1 flex-col dark:bg-slate-900',
+    },
+  },
+  defaultVariants: { bordered: false },
+});
+
+export const Card: FC<Props> = ({ bordered, children, className, fullWidth }) => {
   return (
-    <div
-      style={styles as CSSProperties}
-      className="flex aspect-[2/1] w-full max-w-md flex-col items-center justify-center rounded-xl border border-transparent p-8 text-center
-      [background:padding-box_var(--bg-color),border-box_var(--border-color)]"
-    >
-      <p className="text-xl font-medium text-white">Hello, gradient</p>
-    </div>
+    <figure className={stylesParent({ bordered, fullWidth })}>
+      {bordered ? (
+        <div className={stylesChild({ bordered, className })}>{children}</div>
+      ) : (
+        <Fragment>{children}</Fragment>
+      )}
+    </figure>
   );
 };

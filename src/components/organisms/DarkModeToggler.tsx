@@ -13,7 +13,7 @@ const DarkModeToggler = ({ className }: Props) => {
       whileTap={{ scale: 0.9 }}
       className={
         className ||
-        'flex aspect-square h-[36px] w-[36px] items-center justify-center rounded-full bg-white shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10'
+        'flex aspect-square h-full items-center justify-center rounded-full bg-white shadow-purple-400/10 dark:bg-slate-900/70 dark:shadow-purple-900/10'
       }
       onClick={modeSwitcher}
     >

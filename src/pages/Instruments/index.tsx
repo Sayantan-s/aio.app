@@ -1,5 +1,8 @@
+import { Card } from '@components/atoms';
 import { HeaderPanel, Search } from '@components/organisms';
+import { Modal } from '@components/organisms/Modal';
 import { CoinDetails } from '@components/views/home/CoinDetails';
+import { CountDownTimer } from '@components/views/home/CountdownTimer';
 import { CryptoNews } from '@components/views/home/CryptoNews';
 import { CoinList } from '@components/views/home/CryptoNews/News/CoinList';
 import { GlobalStats } from '@components/views/home/GlobalStats';
@@ -11,7 +14,9 @@ import React, { useCallback, useState } from 'react';
 
 const Instruments = () => {
   const [search, setSearch] = useState('');
-  const [selectedCoinId, setSelectedCoinId] = useState<string>(window.location.hash?.slice(1) || '');
+  const [selectedCoinId, setSelectedCoinId] = useState<string>(
+    window.location.hash?.slice(1) || '',
+  );
   const [coins, setCoins] = useState<ICoin[]>([]);
   const { isInitialLoading, data } = useGetCoins({
     refetchOnWindowFocus: false,
@@ -37,12 +42,14 @@ const Instruments = () => {
 
   const handleSearchClear = useCallback(() => setSearch(''), []);
   const searchResults = () => {
-    const filteredSearch = coins.filter((coin) => coin.name.toLowerCase().includes(search.toLowerCase()));
+    const filteredSearch = coins.filter((coin) =>
+      coin.name.toLowerCase().includes(search.toLowerCase()),
+    );
     return filteredSearch;
   };
 
   return (
-    <div className="h-full flex flex-col space-y-4">
+    <div className="flex h-full flex-col space-y-4">
       <HeaderPanel>
         <Search
           value={search}
@@ -53,7 +60,7 @@ const Instruments = () => {
       </HeaderPanel>
       <div className="flex space-x-4">
         {<GlobalStats isLoading={isInitialLoading} {...data?.data.stats} />}
-        <div className="basis-8/12 flex space-x-4">
+        <div className="flex basis-8/12 space-x-4">
           <CoinList
             coins={searchResults()}
             onCoinSelect={handleSelectCoin}
@@ -64,13 +71,17 @@ const Instruments = () => {
           <UserIdentity />
         </div>
       </div>
-      <div className="flex space-x-4 h-full ">
+      <div className="flex h-full space-x-4 ">
         <CoinDetails coinId={selectedCoinId} />
-        <div className="basis-8/12 flex space-x-4">
+        <div className="flex basis-8/12 space-x-4">
           <NFTList />
           <CryptoNews />
         </div>
       </div>
+      <CountDownTimer seconds={60} onFinish={() => {}} />
+      <Modal show>
+        <Card bordered className="aspect-video w-[500px] p-4"></Card>
+      </Modal>
     </div>
   );
 };
