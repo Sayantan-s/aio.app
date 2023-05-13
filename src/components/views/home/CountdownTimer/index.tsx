@@ -1,5 +1,5 @@
 import Portals from '@components/organisms/Portals';
-import { useEffect, useRef, useState, type FC } from 'react';
+import { useEffect, useReducer, useRef, useState, type FC } from 'react';
 
 interface ITime {
   hours: number;
@@ -12,11 +12,18 @@ interface Props {
   autoStart?: boolean;
   onChange?: (time: ITime) => void;
   onFinish?: () => void;
+  renderHandler?: (controller: React.DispatchWithoutAction) => JSX.Element;
 }
 
 const formatter = (time: number) => (time > 9 ? time : `0${time}`);
 
-export const CountDownTimer: FC<Props> = ({ seconds, onChange, onFinish }) => {
+export const CountDownTimer: FC<Props> = ({
+  seconds,
+  autoStart,
+  onChange,
+  onFinish,
+  renderHandler,
+}) => {
   const [time, setTime] = useState({
     hours: Math.floor(seconds / (60 * 60)),
     minutes: Math.floor(seconds / 60) % 60,
@@ -25,16 +32,20 @@ export const CountDownTimer: FC<Props> = ({ seconds, onChange, onFinish }) => {
 
   const timerRef = useRef<NodeJS.Timer>(null) as React.MutableRefObject<NodeJS.Timer>;
 
+  const [start, handleToggle] = useReducer((state) => !state, autoStart || false);
+
   useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setTime((prevState) => {
-        if (prevState.hours > 0 && prevState.minutes === 0)
-          return { ...prevState, hours: prevState.hours - 1, minutes: 59, secs: 59 };
-        else if (prevState.minutes > 0 && prevState.secs === 0)
-          return { ...prevState, minutes: prevState.minutes - 1, secs: 59 };
-        else return { ...prevState, secs: prevState.secs > 0 ? prevState.secs - 1 : 0 };
-      });
-    }, 1000);
+    if (start) {
+      timerRef.current = setInterval(() => {
+        setTime((prevState) => {
+          if (prevState.hours > 0 && prevState.minutes === 0)
+            return { ...prevState, hours: prevState.hours - 1, minutes: 59, secs: 59 };
+          else if (prevState.minutes > 0 && prevState.secs === 0)
+            return { ...prevState, minutes: prevState.minutes - 1, secs: 59 };
+          else return { ...prevState, secs: prevState.secs > 0 ? prevState.secs - 1 : 0 };
+        });
+      }, 1000);
+    }
     return () => {
       clearInterval(timerRef.current);
     };
@@ -57,6 +68,7 @@ export const CountDownTimer: FC<Props> = ({ seconds, onChange, onFinish }) => {
         <span>:</span>
         <Time>{time.secs}</Time>
       </div>
+      {renderHandler?.(handleToggle)}
     </Portals>
   );
 };

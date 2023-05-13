@@ -1,6 +1,4 @@
-import { Card } from '@components/atoms';
 import { HeaderPanel, Search } from '@components/organisms';
-import { Modal } from '@components/organisms/Modal';
 import { CoinDetails } from '@components/views/home/CoinDetails';
 import { CountDownTimer } from '@components/views/home/CountdownTimer';
 import { CryptoNews } from '@components/views/home/CryptoNews';
@@ -79,9 +77,9 @@ const Instruments = () => {
         </div>
       </div>
       <CountDownTimer seconds={60} onFinish={() => {}} />
-      <Modal show>
+      {/* <Modal show>
         <Card bordered className="aspect-video w-[500px] p-4"></Card>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };
