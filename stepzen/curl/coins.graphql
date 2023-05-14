@@ -1,0 +1,47 @@
+"""
+Some fields ["24hVolume"] are not valid graphql identifiers and were omitted
+"""
+type CoinsEntry {
+  btcPrice: Float
+  change: Float
+  coinrankingUrl: String
+  color: String
+  iconUrl: String
+  listedAt: Int
+  lowVolume: Boolean
+  marketCap: Float
+  name: String
+  price: Float
+  rank: Int
+  sparkline: [Float]
+  symbol: String
+  tier: Int
+  uuid: String
+}
+type Data {
+  coins: [CoinsEntry]
+  stats: Stats
+}
+type Root {
+  data: Data
+  status: String
+}
+type Stats {
+  total: Int
+  total24hVolume: Float
+  totalCoins: Int
+  totalExchanges: Int
+  totalMarketCap: Float
+  totalMarkets: Int
+}
+
+type Query {
+  myQuery: Root
+    @rest(
+      endpoint: "https://coinranking1.p.rapidapi.com/coins"
+      headers: [
+        { name: "x-rapidapi-key", value: "$x_rapidapi_key_d7d6b4f3d2;" }
+      ]
+      configuration: "curl_import_config"
+    )
+}

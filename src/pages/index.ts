@@ -1,2 +1,1 @@
-import Instruments from "./Instruments";
-export { Instruments };
+export * from './Home';

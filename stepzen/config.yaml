@@ -1,0 +1,4 @@
+configurationset:
+  - configuration:
+      name: curl_import_config
+      x_rapidapi_key_d7d6b4f3d2: 074279b31dmsh7d46ca1f3bf2ce4p13b41fjsn48982e042425

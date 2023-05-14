@@ -16,7 +16,7 @@ export const Modal: FC<PropsWithChildren<Props>> = ({ children, show }) => {
             {children}
           </div>
           <div
-            className="fixed top-0 left-0 h-full w-full bg-slate-900/70"
+            className="fixed top-0 left-0 h-full w-full bg-black/30"
             style={{ backdropFilter: 'blur(20px)' }}
           />
         </Fragment>

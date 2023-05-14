@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useLayoutEffect, useState } from 'react';
 
 type Mode = 'light' | 'dark';
 
@@ -19,7 +19,7 @@ export const ThemeContext = ({ children }: PropsWithChildren) => {
     setMode(value);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     mode === 'dark'
       ? document.documentElement.classList.add('dark')
       : document.documentElement.classList.remove('dark');
