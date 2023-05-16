@@ -1,4 +1,6 @@
-import { HeaderPanel, Search } from '@components/organisms';
+import { Card, GradientText } from '@components/atoms';
+import { DarkModeToggler, HeaderPanel, Search } from '@components/organisms';
+import { Modal } from '@components/organisms/Modal';
 import { CoinDetails } from '@components/views/home/CoinDetails';
 import { CountDownTimer } from '@components/views/home/CountdownTimer';
 import { CryptoNews } from '@components/views/home/CryptoNews';
@@ -8,6 +10,8 @@ import { NFTList } from '@components/views/home/NFTList';
 import { UserIdentity } from '@components/views/home/UserIdentity';
 import { useGetCoins } from '@hooks';
 import type { ICoin } from '@hooks/useGetCoins/coin.types';
+import type { TapHandlers } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 
 export const Home = () => {
@@ -15,6 +19,7 @@ export const Home = () => {
   const [selectedCoinId, setSelectedCoinId] = useState<string>(
     window.location.hash?.slice(1) || '',
   );
+  const [showSignUp, setShowSignUp] = useState(false);
   const [coins, setCoins] = useState<ICoin[]>([]);
   const { isInitialLoading, data } = useGetCoins({
     refetchOnWindowFocus: false,
@@ -46,6 +51,10 @@ export const Home = () => {
     return filteredSearch;
   };
 
+  const handleShowSignupModal: TapHandlers['onTap'] = () => {
+    setShowSignUp(true);
+  };
+
   return (
     <div className="flex h-full flex-col space-y-4">
       <HeaderPanel>
@@ -55,6 +64,16 @@ export const Home = () => {
           onSearchClear={handleSearchClear}
           placeholder={'Bitcon or BTC..'}
         />
+        <div className="flex items-center space-x-4 ">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            className="h-full w-24 rounded-full bg-slate-900/50 backdrop:blur-xl"
+            onTap={handleShowSignupModal}
+          >
+            <GradientText as={'span'}>Signup</GradientText>
+          </motion.button>
+          <DarkModeToggler />
+        </div>
       </HeaderPanel>
       <div className="flex space-x-4">
         {<GlobalStats isLoading={isInitialLoading} {...data?.data.stats} />}
@@ -77,7 +96,7 @@ export const Home = () => {
         </div>
       </div>
       <CountDownTimer seconds={60} onFinish={() => {}} />
-      {/* <Modal show>
+      <Modal show={showSignUp}>
         <Card bordered className="flex aspect-video w-[400px] justify-center space-y-2 p-2">
           <button className="mx-auto flex w-9/12 items-center justify-center space-x-2 rounded-3xl bg-gradient-to-b from-slate-50 to-slate-100 px-1 py-2 text-slate-900">
             <svg
@@ -128,7 +147,7 @@ export const Home = () => {
             </svg>
           </button>
         </Card>
-      </Modal> */}
+      </Modal>
     </div>
   );
 };

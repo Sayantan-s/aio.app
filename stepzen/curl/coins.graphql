@@ -39,9 +39,7 @@ type Query {
   myQuery: Root
     @rest(
       endpoint: "https://coinranking1.p.rapidapi.com/coins"
-      headers: [
-        { name: "x-rapidapi-key", value: "$x_rapidapi_key_d7d6b4f3d2;" }
-      ]
+      headers: [{ name: "x-rapidapi-key", value: "$x_rapidapi_key_d7d6b4f3d2;" }]
       configuration: "curl_import_config"
     )
 }
