@@ -22,6 +22,7 @@
     "start:instant": "yarn build && yarn preview"
   },
   "dependencies": {
+    "@sentry/react": "^7.53.1",
     "@supabase/supabase-js": "^2.21.0",
     "@tanstack/react-query": "^4.29.3",
     "axios": "^1.2.1",
