@@ -13,6 +13,7 @@ export const AuthPopup: FC<Props> = ({ show }) => {
       password: 'kjp123',
     });
   };
+
   return (
     <Modal show={show}>
       <Card bordered className="flex w-[500px] justify-center space-y-2 px-6 py-8">
