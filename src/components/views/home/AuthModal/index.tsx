@@ -1,4 +1,3 @@
-import { createUserAccount } from '@api/auth';
 import { Card } from '@components/atoms';
 import { Logo } from '@components/constants/Logo';
 import { Modal } from '@components/organisms/Modal';
@@ -8,10 +7,6 @@ import type { Props } from './types';
 export const AuthPopup: FC<Props> = ({ show }) => {
   const handleSignUp: FormEventHandler = async (eve) => {
     eve.preventDefault();
-    const result = await createUserAccount({
-      email: 'sssamanta789@gmail.com',
-      password: 'kjp123',
-    });
   };
   return (
     <Modal show={show}>

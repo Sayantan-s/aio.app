@@ -52,7 +52,7 @@ export const List = <TData,>({
       }`}
     >
       <div className="relative flex h-full flex-col">
-        <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-1 flex-col overflow-hidden">
+        <div className="absolute bottom-0 left-0 right-0 top-0 flex flex-1 flex-col overflow-hidden">
           <div
             className="scrollbar-hide news flex flex-col space-y-3 overflow-y-auto pb-4"
             onScroll={onHandleScroll}
